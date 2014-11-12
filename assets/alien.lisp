@@ -1,0 +1,21 @@
+(:shapes ((:image "alien.png"
+           :size (100 100)
+           :texture-coords ((0 1)
+                            (1 1)
+                            (1 0)
+                            (0 0))
+           :lines ((0 0 0)
+                   (1 0 0)
+                   (1 1 0)
+                   (0 1 0)))
+
+          (:image "alien.png"
+           :size (200 200)
+           :texture-coords ((0 1)
+                            (1 1)
+                            (1 0)
+                            (0 0))
+           :lines ((0 0 0)
+                   (1 0 0)
+                   (1 1 0)
+                   (0 1 0)))))
