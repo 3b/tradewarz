@@ -3,10 +3,10 @@
 (defclass display ()
   ((width :accessor width
           :initarg :width
-          :initform 1280)
+          :initform 800)
    (height :accessor height
            :initarg :height
-           :initform 800)
+           :initform 600)
    (title :reader title
           :initform "TradeWarz")
    (fps :reader fps
@@ -27,6 +27,14 @@
               :title-caption (title *display*)
               :icon-caption (title *display*)))
 
+(defun setup-viewport (width height)
+  (gl:matrix-mode :projection)
+  (gl:load-identity)
+  (gl:viewport 0 0 width height)
+  (gl:ortho 0 width 0 height -1 0) ;; works without this line
+  (gl:matrix-mode :modelview))
+
 (defun configure-display ()
-  (setf cl-opengl-bindings:*gl-get-proc-address* #'sdl-gl-get-proc-address
-        (sdl:frame-rate) (fps *display*)))
+  (setf cl-opengl-bindings:*gl-get-proc-address* #'sdl-cffi::sdl-gl-get-proc-address
+        (sdl:frame-rate) (fps *display*))
+  (setup-viewport (width *display*) (height *display*)))

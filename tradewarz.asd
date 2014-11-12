@@ -7,10 +7,10 @@
   :depends-on (lispbuilder-sdl
                lispbuilder-sdl-image
                cl-opengl
-               clinch
                bordeaux-threads)
   :serial t
   :components ((:file "packages")
+               (:file "utils")
                (:file "resources")
                (:file "display")
                (:file "engine")))

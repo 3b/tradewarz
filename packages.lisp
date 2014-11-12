@@ -1,3 +1,3 @@
 (defpackage #:tradewarz
-  (:use cl sdl)
+  (:use cl)
   (:export start-game))
