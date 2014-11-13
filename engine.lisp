@@ -9,8 +9,6 @@
      (restartable (draw)))))
 
 (defun draw ()
-  (gl:enable :texture-2d :blend)
-  (gl:blend-func :src-alpha 1)
   (gl:clear :color-buffer-bit)
   (load-asset "alien")
   (gl:flush)
