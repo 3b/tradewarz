@@ -14,4 +14,5 @@
                (:file "utils")
                (:file "resources")
                (:file "display")
+               (:file "input")
                (:file "engine")))

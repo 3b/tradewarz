@@ -29,8 +29,8 @@
         (width (sdl:width surface))
         (height (sdl:height surface)))
     (gl:bind-texture :texture-2d texture)
-    (gl:tex-parameter :texture-2d :texture-min-filter :linear)
-    (gl:tex-parameter :texture-2d :texture-mag-filter :linear)
+    (gl:tex-parameter :texture-2d :generate-mipmap t)
+    (gl:tex-parameter :texture-2d :texture-min-filter :linear-mipmap-linear)
     (gl:tex-image-2d
       :texture-2d 0 :rgba width height 0 :rgba :unsigned-byte
       (sdl-base::with-pixel (pixels (sdl:fp surface))

@@ -8,13 +8,30 @@
 (defun define-events ()
   (sdl:with-events ()
     (:quit-event () t)
+    (:key-down-event (:state state
+                      :scancode scancode
+                      :key key
+                      :mod-key mod-key
+                      :unicode unicode)
+     (key-down key state mod-key scancode unicode))
     (:idle ()
      (restartable (draw)))))
 
 (defun draw ()
   (gl:clear :color-buffer-bit)
-  (draw-entity :alien-small)
-  (draw-entity :hex)
+  (gl:with-pushed-matrix
+    (gl:translate 30 20 0)
+    (gl:translate (* 20 (sin (/ (sdl:sdl-get-ticks) 1000.0)))
+                  (* 20 (cos (/ (sdl:sdl-get-ticks) 1000.0)))
+                  0)
+    (draw-entity :alien-small))
+  (gl:with-pushed-matrix
+    (gl:translate 130 120 0)
+    (gl:translate (* 20 (sin (/ (sdl:sdl-get-ticks) 100.0)))
+                  (* 20 (cos (/ (sdl:sdl-get-ticks) 100.0)))
+                  0)
+    (draw-entity :alien-big))
+
   (gl:flush)
   (sdl:update-display))
 

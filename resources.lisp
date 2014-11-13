@@ -16,9 +16,7 @@
 (defun draw-entity (entity)
   (let* ((data (getf *entities* entity))
          (texture-id (or (getf data :texture-id) 0)))
-    (gl:enable :texture-2d :blend)
     (gl:bind-texture :texture-2d texture-id)
-    (gl:blend-func :src-alpha :one-minus-src-alpha)
     (gl:with-primitive :triangle-strip
       (loop for (object texture color) in (getf data :lines)
             for location = (mapcar #'* object (getf data :size)) do

@@ -32,7 +32,9 @@
   (gl:load-identity)
   (gl:viewport 0 0 width height)
   (gl:ortho 0 width 0 height -1 0) ;; works without this line
-  (gl:matrix-mode :modelview))
+  (gl:matrix-mode :modelview)
+  (gl:enable :texture-2d :blend)
+  (gl:blend-func :src-alpha :one-minus-src-alpha))
 
 (defun configure-display ()
   (setf cl-opengl-bindings:*gl-get-proc-address* #'sdl-cffi::sdl-gl-get-proc-address
