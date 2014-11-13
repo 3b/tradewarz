@@ -4,19 +4,13 @@
   (let* ((data (read-asset asset)))
     (loop for shape in (getf data :shapes)
           for image = (getf shape :image)
-          for coords = (getf shape :texture-coords)
-          for lines = (getf shape :lines)
-          for (width height) = (getf shape :size)
-          when (and image coords) do (load-texture (get-path "res" image))
+          for size = (getf shape :size)
+          when image do (load-texture (get-path "res" image))
           do (gl:with-primitive :polygon
-               (loop for line in lines
-                     do (when coords
-                          (let ((coord (pop coords)))
-                            (gl:tex-coord (car coord)
-                                          (cadr coord))))
-                     (gl:vertex (* (car line) width)
-                                (* (cadr line) height)
-                                (caddr line)))))))
+               (loop for (object texture color) in (getf shape :lines) do
+                     (apply #'gl:color color)
+                     (apply #'gl:tex-coord texture)
+                     (apply #'gl:vertex (mapcar #'* object size)))))))
 
 (defun load-texture (resource &key (imagep t))
   ;; TODO: create non-image textures?
