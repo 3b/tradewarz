@@ -1,6 +1,9 @@
 (in-package :tradewarz)
 
 (defparameter *display* (make-instance 'display))
+(defparameter *assets*
+  '("alien"))
+(defparameter *entities* nil)
 
 (defun define-events ()
   (sdl:with-events ()
@@ -10,7 +13,8 @@
 
 (defun draw ()
   (gl:clear :color-buffer-bit)
-  (load-asset "alien")
+  (draw-entity :alien-small)
+  (draw-entity :alien-big)
   (gl:flush)
   (sdl:update-display))
 
@@ -19,6 +23,7 @@
 (defun start-game ()
   (sdl:with-init ()
     (create-display)
+    (load-assets)
     (define-events)
     (clean-up)))
 
