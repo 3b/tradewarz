@@ -14,7 +14,7 @@
 (defun draw ()
   (gl:clear :color-buffer-bit)
   (draw-entity :alien-small)
-  (draw-entity :alien-big)
+  (draw-entity :hex)
   (gl:flush)
   (sdl:update-display))
 
