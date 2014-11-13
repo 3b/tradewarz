@@ -1,6 +1,7 @@
 (in-package :tradewarz)
 
 (defun load-assets ()
+  (defparameter *textures* (make-hash-table :test 'equal))
   (loop for asset in *assets* do
         (load-entities asset)))
 
@@ -16,7 +17,7 @@
   (let* ((data (getf *entities* entity))
          (texture-id (or (getf data :texture-id) 0)))
     (gl:enable :texture-2d :blend)
-    (gl:bind-texture :texture-2d texture-id) 
+    (gl:bind-texture :texture-2d texture-id)
     (gl:blend-func :src-alpha :one-minus-src-alpha)
     (gl:with-primitive :triangle-strip
       (loop for (object texture color) in (getf data :lines)
@@ -26,5 +27,8 @@
             (apply #'gl:vertex location)))))
 
 (defun load-texture (texture)
-  (let ((resource (get-path "res" texture)))
-    (surface->texture (image->surface resource))))
+  (let* ((resource (get-path "res" texture))
+         (texture-id (gethash resource *textures*)))
+    (or texture-id
+        (setf (gethash resource *textures*)
+              (surface->texture (image->surface resource))))))
