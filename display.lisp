@@ -31,7 +31,7 @@
   (gl:matrix-mode :projection)
   (gl:load-identity)
   (gl:viewport 0 0 width height)
-  (gl:ortho 0 width 0 height -1 0) ;; works without this line
+  (gl:ortho 0 width height 0 0 1)
   (gl:matrix-mode :modelview)
   (gl:enable :texture-2d :blend)
   (gl:blend-func :src-alpha :one-minus-src-alpha))
