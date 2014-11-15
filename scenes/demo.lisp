@@ -1,2 +1,6 @@
 (:assets ("alien")
- :map (0 0))
+ :width 3
+ :height 2
+ :tiles #2a((:hex :hex :hex)
+            (:hex :hex :hex))
+)

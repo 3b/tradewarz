@@ -3,8 +3,7 @@
 (defclass scene ()
   ((name :reader name
          :initarg :name)
-   (tile-map :reader tile-map
-             :initform nil) 
+   (world-map :accessor world-map)
    (entities :accessor entities
              :initform (make-hash-table :test 'equal))))
 
@@ -14,8 +13,13 @@
 (defmethod initialize-instance :after ((object scene) &key)
   (let ((data (read-data "scenes" (name object))))
     (loop for asset in (getf data :assets)
-          for tile in (getf data :map) do
-          (load-entities object asset))))
+          for width = (getf data :width)
+          for height = (getf data :height)
+          for tiles = (getf data :tiles) do
+          (load-entities object asset)
+          (load-map object `(:width ,width
+                             :height ,height
+                             :tiles ,tiles)))))
 
 (defun load-entities (scene asset)
   (loop for (name data) in (read-data "assets" asset)

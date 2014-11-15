@@ -40,6 +40,7 @@
                   (* 20 (cos (/ (sdl:sdl-get-ticks) 250.0)))
                   0)
     (draw-entity :alien-small))
+  (generate-map)
   (gl:flush)
   (sdl:update-display))
 

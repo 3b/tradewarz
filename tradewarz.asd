@@ -15,5 +15,6 @@
                (:file "display")
                (:file "input")
                (:file "entity")
+               (:file "map")
                (:file "scene")
                (:file "engine")))
