@@ -26,10 +26,11 @@
   (setf cl-opengl-bindings:*gl-get-proc-address*
         #'sdl-cffi::sdl-gl-get-proc-address
         (sdl:frame-rate) (fps object))
+  (gl:viewport 0 0 (width object) (height object))
   (gl:matrix-mode :projection)
   (gl:load-identity)
-  (gl:viewport 0 0 (width object) (height object))
   (gl:ortho 0 (width object) (height object) 0 0 1)
   (gl:matrix-mode :modelview)
+  (gl:load-identity)
   (gl:enable :texture-2d :blend)
   (gl:blend-func :src-alpha :one-minus-src-alpha))

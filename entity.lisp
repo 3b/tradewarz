@@ -21,14 +21,16 @@
   (when (image object)
     (setf (texture-id object) (load-texture (image object)))))
 
-(defun draw-entity (name)
+(defun draw-entity (name x y)
   (let ((entity (gethash name (entities (scene *game*)))))
-    (gl:bind-texture :texture-2d (texture-id entity))
-    (gl:with-primitive :triangle-strip
-      (loop for (object texture color) in (lines entity) do
-            (apply #'gl:color color)
-            (apply #'gl:tex-coord texture)
-            (apply #'gl:vertex (mapcar #'* object (size entity)))))))
+    (gl:with-pushed-matrix
+      (gl:bind-texture :texture-2d (texture-id entity))
+      (gl:translate x y 0)
+      (gl:with-primitive :triangle-strip
+        (loop for (object texture color) in (lines entity) do
+              (apply #'gl:color color)
+              (apply #'gl:tex-coord texture)
+              (apply #'gl:vertex (mapcar #'* object (size entity))))))))
 
 (defun load-texture (texture)
   (let* ((resource (get-path "res" texture))

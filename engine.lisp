@@ -28,18 +28,6 @@
 
 (defun main-loop ()
   (gl:clear :color-buffer-bit)
-  (gl:with-pushed-matrix
-    (gl:translate 30 30 0)
-    (gl:translate (* 20 (sin (/ (sdl:sdl-get-ticks) 100.0)))
-                  (* 20 (cos (/ (sdl:sdl-get-ticks) 100.0)))
-                  0)
-    (draw-entity :alien-big))
-  (gl:with-pushed-matrix
-    (gl:translate 300 60 0)
-    (gl:translate (* 20 (sin (/ (sdl:sdl-get-ticks) 250.0)))
-                  (* 20 (cos (/ (sdl:sdl-get-ticks) 250.0)))
-                  0)
-    (draw-entity :alien-small))
   (generate-map)
   (gl:flush)
   (sdl:update-display))
