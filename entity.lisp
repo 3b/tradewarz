@@ -3,10 +3,16 @@
 (defclass entity ()
   ((name :reader name
          :initarg :name)
-   (size :reader size
-         :initarg :size)
    (image :reader image
           :initarg :image
+          :initform nil)
+   (size :reader size
+         :initarg :size)
+   (sides :reader sides
+          :initarg :sides
+          :initform nil)
+   (color :reader color
+          :initarg :color
           :initform nil)
    (lines :reader lines
           :initarg :lines)
@@ -22,12 +28,17 @@
     (setf (texture-id object) (load-texture (image object)))))
 
 (defun draw-entity (name x y)
-  (let ((entity (gethash name (entities (scene *game*)))))
+  (let* ((entity (gethash name (entities (scene *game*))))
+         (primitive (if (lines entity)
+                      :triangle-strips
+                      :triangle-fan))
+         (lines (or (lines entity)
+                    (make-polygon (sides entity) (color entity)))))
     (gl:with-pushed-matrix
       (gl:bind-texture :texture-2d (texture-id entity))
       (gl:translate x y 0)
-      (gl:with-primitive :triangle-strip
-        (loop for (object texture color) in (lines entity) do
+      (gl:with-primitive primitive
+        (loop for (object texture color) in lines do
               (apply #'gl:color color)
               (apply #'gl:tex-coord texture)
               (apply #'gl:vertex (mapcar #'* object (size entity))))))))

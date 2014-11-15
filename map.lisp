@@ -8,6 +8,22 @@
    (tiles :accessor tiles
           :initarg :tiles)))
 
+(defun make-polygon (sides color)
+  (loop with angle = 0
+        with lines = '()
+        with slice = (/ (* 2 pi) sides)
+        with radius = 0.5
+        for vertex from 1 to sides
+        for x = (cos angle)
+        for y = (sin angle) do
+        (incf angle slice)
+        (push `((,(* radius x) ,(* radius y) 0)
+                (,(/ (+ x 1) 2) ,(/ (+ y 1) 2) 0)
+                ,color) lines)
+        finally (return (push `((,radius 0 0)
+                                (1 0.5 0)
+                                ,color) lines))))
+
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
@@ -16,7 +32,7 @@
     (loop for x from 0 to (1- (width world-map)) do
           (loop for y from 0 to (1- (height world-map))
                 for tile = (aref (tiles world-map) y x)
-                for (x-pos y-pos) = `(,(* x 96) ,(* y 27)) do
+                for (x-pos y-pos) = `(,(* x 98) ,(* y 29)) do
                 (if (evenp y)
-                  (incf x-pos 48))
+                  (incf x-pos 49))
                 (draw-entity tile x-pos y-pos)))))
