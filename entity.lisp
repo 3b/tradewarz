@@ -30,8 +30,8 @@
             (apply #'gl:tex-coord texture)
             (apply #'gl:vertex (mapcar #'* object (size entity)))))))
 
-(defun load-texture (filename)
-  (let* ((resource (get-path "res" filename))
+(defun load-texture (texture)
+  (let* ((resource (get-path "res" texture))
          (texture-id (gethash resource (textures *game*))))
     (or texture-id
         (setf (gethash resource (textures *game*))

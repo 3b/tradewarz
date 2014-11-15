@@ -9,8 +9,8 @@
   (let ((path (format nil "~a/~a" sub-path filename)))
     (asdf:system-relative-pathname "tradewarz" path)))
 
-(defun read-asset (asset)
-  (let ((filename (get-path "assets" (format nil "~a.lisp" asset))))
+(defun read-data (data-type data-name)
+  (let ((filename (get-path data-type (format nil "~a.lisp" data-name))))
     (with-open-file (in filename :direction :input)
       (read in))))
 

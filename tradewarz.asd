@@ -12,7 +12,8 @@
   :serial t
   :components ((:file "packages")
                (:file "utils")
-               (:file "resources")
                (:file "display")
                (:file "input")
+               (:file "entity")
+               (:file "scene")
                (:file "engine")))

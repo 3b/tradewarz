@@ -1,9 +1,18 @@
 (in-package :tradewarz)
 
-(defparameter *display* (make-instance 'display))
-(defparameter *assets*
-  '("alien"))
-(defparameter *entities* nil)
+(defvar *game* nil)
+
+(defclass game ()
+  ((display :reader display
+            :initform (make-instance 'display))
+   (textures :accessor textures
+             :initform (make-hash-table :test 'equal))
+   (scene :accessor scene
+          :initarg :scene
+          :initform nil)))
+
+(defun make-game ()
+  (setf *game* (make-instance 'game)))
 
 (defun define-events ()
   (sdl:with-events ()
@@ -15,9 +24,9 @@
                       :unicode unicode)
      (key-down key state mod-key scancode unicode))
     (:idle ()
-     (restartable (draw)))))
+     (restartable (main-loop)))))
 
-(defun draw ()
+(defun main-loop ()
   (gl:clear :color-buffer-bit)
   (gl:with-pushed-matrix
     (gl:translate 30 30 0)
@@ -34,14 +43,11 @@
   (gl:flush)
   (sdl:update-display))
 
-(defun clean-up ())
-
 (defun start-game ()
-  (sdl:with-init ()
-    (create-display)
-    (load-assets)
-    (define-events)
-    (clean-up)))
-
-(defun tradewarz ()
-  (bt:make-thread #'start-game :name "tradewarz"))
+  (bt:make-thread
+    #'(lambda ()
+        (sdl:with-init ()
+          (make-game)
+          (make-scene :name "demo")
+          (define-events)))
+    :name "tradewarz"))
