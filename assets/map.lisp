@@ -1,21 +1,19 @@
 ;; map tile entities
 
-;; map tile entities normally should have their 'size' set to :map-tile
-;;   rather than their explicit size. with 'size' set to :map-tile, the
-;;   size of the entity will be that of the map's 'tile-size' defined in the
-;;   scene's schema.
+;; map tile entities normally should have 'tile' set to true. this tells the
+;; map generator to use the size and shape of all map tiles specified in the
+;; scene's schema.
 
-;; map tile entities should have their 'shape' set to one of the following in
-;;   order for the map grid to be rendered correctly:
-;; supported shapes - :hexagon
+;; the only other option needed for map tile entities is either 'image' set to
+;; the desired texture, or 'color' if not using the default of white.
 
 ;; map tile entities should not have 'lines' set. the geometry of a map tile
-;;   is programatically generated based on its defined 'shape'.
+;; is programatically generated based on the defined 'tile-shape' in the
+;; scene's schema.
 
 (
  ;; a 6-sided map tile
  (:hex
    (:image "grass.png"
-    :size :map-tile
-    :shape :hexagon))
+    :tile t))
 )

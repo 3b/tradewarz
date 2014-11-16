@@ -6,15 +6,15 @@
    (image :reader image
           :initarg :image
           :initform nil)
+   (tile :reader tile
+         :initarg :tile
+         :initform nil)
    (shape :reader shape
           :initarg :shape
           :initform :quad)
    (size :reader size
          :initarg :size
          :initform '(32 32))
-   (sides :reader sides
-          :initarg :sides
-          :initform nil)
    (color :reader color
           :initarg :color
           :initform '(1 1 1))
@@ -33,18 +33,25 @@
   (gethash name (entities (current-scene))))
 
 (defmethod primitive ((entity entity))
-  (if (eq (size entity) :map-tile)
+  (if (or (not (eq (shape entity) :quad))
+          (and (tile entity)
+               (not (eq (tile-shape (current-map)) :quad))))
     :triangle-fan
     :triangle-strip))
 
 (defmethod vertices ((entity entity))
   (or (lines entity)
-      (make-shape (shape entity) (color entity))))
+      (make-shape (get-shape entity) (color entity))))
 
 (defmethod get-size ((entity entity))
-  (if (eq (size entity) :map-tile)
+  (if (tile entity)
     (tile-size (current-map))
     (size entity)))
+
+(defmethod get-shape ((entity entity))
+  (if (tile entity)
+    (tile-shape (current-map))
+    (shape entity)))
 
 (defun draw-entity (name x y)
   (let* ((entity (entity name))
