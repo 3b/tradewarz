@@ -5,7 +5,7 @@
 (defclass game ()
   ((display :reader display
             :initform (make-instance 'display))
-   (textures :accessor textures
+   (textures :reader textures
              :initform (make-hash-table :test 'equal))
    (scene :accessor scene
           :initarg :scene

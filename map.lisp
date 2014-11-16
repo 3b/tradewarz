@@ -1,9 +1,9 @@
 (in-package :tradewarz)
 
 (defclass world-map ()
-  ((width :accessor width
+  ((width :reader width
           :initarg :width)
-   (height :accessor height
+   (height :reader height
            :initarg :height)
    (tile-shape :reader tile-shape
                :initarg :tile-shape
@@ -11,7 +11,7 @@
    (tile-size :reader tile-size
               :initarg :tile-size
               :initform '(64 64))
-   (tiles :accessor tiles
+   (tiles :reader tiles
           :initarg :tiles)))
 
 (defun current-map ()

@@ -2,7 +2,7 @@
 
 (defun make-shape (shape color)
   (case shape
-    (:hexagon (make-polygon 4 color))
+    (:hexagon (make-polygon 6 color))
     (otherwise (make-quad color))))
 
 (defun make-quad (color)
@@ -26,4 +26,3 @@
         finally (return (push `((,radius 0 0)
                                 (1 0.5 0)
                                 ,color) lines))))
- 

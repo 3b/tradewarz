@@ -4,7 +4,7 @@
   ((name :reader name
          :initarg :name)
    (world-map :accessor world-map)
-   (entities :accessor entities
+   (entities :reader entities
              :initform (make-hash-table :test 'equal))))
 
 (defun make-scene (&key name)
@@ -14,11 +14,11 @@
   (scene *game*))
 
 (defmethod initialize-instance :after ((object scene) &key)
-  (let ((data (read-data "scenes" (name object))))
-    (loop for asset in (getf data :assets)
-          for world = (getf data :world) do
-          (load-entities object asset)
-          (apply #'load-map object world))))
+  (loop with data = (read-data "scenes" (name object))
+        with world = (getf data :world)
+        for asset in (getf data :assets) do
+        (load-entities object asset)
+        (apply #'load-map object world)))
 
 (defun load-entities (scene asset)
   (loop for (name data) in (read-data "assets" asset)

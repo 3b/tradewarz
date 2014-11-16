@@ -1,10 +1,10 @@
 (in-package :tradewarz)
 
 (defclass display ()
-  ((width :accessor width
+  ((width :reader width
           :initarg :width
           :initform 800)
-   (height :accessor height
+   (height :reader height
            :initarg :height
            :initform 600)
    (title :reader title
