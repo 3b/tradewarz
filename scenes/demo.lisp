@@ -1,6 +1,7 @@
 (:assets ("map" "alien")
  :width 14
  :height 23
+ :tile-size (64 64)
  :tiles #2a((:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)
             (:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)
             (:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)

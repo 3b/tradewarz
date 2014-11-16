@@ -7,6 +7,7 @@
   :depends-on (lispbuilder-sdl
                lispbuilder-sdl-image
                cl-opengl
+               cl-glu
                cl-fad
                bordeaux-threads)
   :serial t

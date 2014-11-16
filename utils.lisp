@@ -14,6 +14,13 @@
     (with-open-file (in filename :direction :input)
       (read in))))
 
+(defun load-texture (texture)
+  (let* ((resource (get-path "res" texture))
+         (texture-id (gethash resource (textures *game*))))
+    (or texture-id
+        (setf (gethash resource (textures *game*))
+              (surface->texture (image->surface resource))))))
+
 (defun image->surface (filename)
   (let* ((image (sdl-image:load-image filename))
          (surface (sdl:create-surface

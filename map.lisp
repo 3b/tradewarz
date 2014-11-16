@@ -5,10 +5,22 @@
           :initarg :width)
    (height :accessor height
            :initarg :height)
+   (tile-size :accessor tile-size
+              :initarg :tile-size)
    (tiles :accessor tiles
           :initarg :tiles)))
 
-(defun make-polygon (sides color)
+(defun current-map ()
+  (world-map (current-scene)))
+
+(defun make-polygon (shape color)
+  (let ((sides
+          (case shape
+            (:hexagon 6)
+            (otherwise 4))))
+    (polygon-vertices sides color)))
+
+(defun polygon-vertices (sides color)
   (loop with angle = 0
         with lines = '()
         with slice = (/ (* 2 pi) sides)
@@ -24,19 +36,22 @@
                                 (1 0.5 0)
                                 ,color) lines))))
 
+(defun hex-tile-offset (world-map x y)
+  (let* ((tile (aref (tiles world-map) y x))
+         (tile-size (tile-size world-map))
+         (offset-x (* x (* (car tile-size) 3/2)))
+         (offset-y (* y (* (cadr tile-size) 5/12))))
+    (when (evenp y)
+      (incf offset-x (* (car tile-size) 3/4)))
+    (gl:with-pushed-matrix
+      (gl:rotate 90 0 0 1)
+      (apply #'draw-entity tile `(,offset-x ,offset-y)))))
+
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
 (defun generate-map ()
-  (let ((world-map (world-map (scene *game*))))
+  (let ((world-map (current-map)))
     (loop for x from 0 to (1- (width world-map)) do
-          (gl:push-name x)
-          (loop for y from 0 to (1- (height world-map))
-                for tile = (aref (tiles world-map) y x)
-                for (x-pos y-pos) = `(,(* x 72) ,(* y 20)) do
-                (if (evenp y)
-                  (incf x-pos 36))
-                (gl:with-pushed-matrix
-                  (gl:rotate 90 0 0 1)
-                  (gl:push-name y)
-                  (draw-entity tile x-pos y-pos))))))
+          (loop for y from 0 to (1- (height world-map)) do
+                (hex-tile-offset world-map x y)))))
