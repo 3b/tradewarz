@@ -15,6 +15,7 @@
                (:file "utils")
                (:file "display")
                (:file "input")
+               (:file "shape")
                (:file "entity")
                (:file "map")
                (:file "scene")

@@ -16,15 +16,9 @@
 (defmethod initialize-instance :after ((object scene) &key)
   (let ((data (read-data "scenes" (name object))))
     (loop for asset in (getf data :assets)
-          for width = (getf data :width)
-          for height = (getf data :height)
-          for tile-size = (getf data :tile-size)
-          for tiles = (getf data :tiles) do
+          for world = (getf data :world) do
           (load-entities object asset)
-          (load-map object `(:width ,width
-                             :height ,height
-                             :tile-size ,tile-size
-                             :tiles ,tiles)))))
+          (apply #'load-map object world))))
 
 (defun load-entities (scene asset)
   (loop for (name data) in (read-data "assets" asset)

@@ -5,36 +5,17 @@
           :initarg :width)
    (height :accessor height
            :initarg :height)
-   (tile-size :accessor tile-size
-              :initarg :tile-size)
+   (tile-shape :reader tile-shape
+               :initarg :tile-shape
+               :initform :quad)
+   (tile-size :reader tile-size
+              :initarg :tile-size
+              :initform '(64 64))
    (tiles :accessor tiles
           :initarg :tiles)))
 
 (defun current-map ()
   (world-map (current-scene)))
-
-(defun make-polygon (shape color)
-  (let ((sides
-          (case shape
-            (:hexagon 6)
-            (otherwise 4))))
-    (polygon-vertices sides color)))
-
-(defun polygon-vertices (sides color)
-  (loop with angle = 0
-        with lines = '()
-        with slice = (/ (* 2 pi) sides)
-        with radius = 0.5
-        for vertex from 1 to sides
-        for x = (cos angle)
-        for y = (sin angle) do
-        (incf angle slice)
-        (push `((,(* radius x) ,(* radius y) 0)
-                (,(/ (+ x 1) 2) ,(/ (+ y 1) 2) 0)
-                ,color) lines)
-        finally (return (push `((,radius 0 0)
-                                (1 0.5 0)
-                                ,color) lines))))
 
 (defun hex-tile-offset (world-map x y)
   (let* ((tile (aref (tiles world-map) y x))

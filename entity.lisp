@@ -8,7 +8,7 @@
           :initform nil)
    (shape :reader shape
           :initarg :shape
-          :initform nil)
+          :initform :quad)
    (size :reader size
          :initarg :size
          :initform '(32 32))
@@ -33,14 +33,13 @@
   (gethash name (entities (current-scene))))
 
 (defmethod primitive ((entity entity))
-  (if (shape entity)
+  (if (eq (size entity) :map-tile)
     :triangle-fan
     :triangle-strip))
 
 (defmethod vertices ((entity entity))
-  (if (shape entity)
-    (make-polygon (shape entity) (color entity))
-    (lines entity)))
+  (or (lines entity)
+      (make-shape (shape entity) (color entity))))
 
 (defmethod get-size ((entity entity))
   (if (eq (size entity) :map-tile)
