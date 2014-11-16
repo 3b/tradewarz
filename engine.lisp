@@ -27,8 +27,11 @@
      (restartable (main-loop)))))
 
 (defun main-loop ()
-  (gl:clear :color-buffer-bit)
+  (gl:clear :color-buffer-bit :depth-buffer-bit)
   (generate-map)
+  (gl:with-pushed-matrix
+    (gl:translate 0 0 -1)
+    (draw-entity :alien-small -300 400))
   (gl:flush)
   (sdl:update-display))
 

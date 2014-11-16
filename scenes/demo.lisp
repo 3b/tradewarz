@@ -1,4 +1,4 @@
-(:assets ("map")
+(:assets ("map" "alien")
  :width 14
  :height 23
  :tiles #2a((:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)

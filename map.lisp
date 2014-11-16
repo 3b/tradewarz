@@ -30,9 +30,13 @@
 (defun generate-map ()
   (let ((world-map (world-map (scene *game*))))
     (loop for x from 0 to (1- (width world-map)) do
+          (gl:push-name x)
           (loop for y from 0 to (1- (height world-map))
                 for tile = (aref (tiles world-map) y x)
-                for (x-pos y-pos) = `(,(* x 98) ,(* y 29)) do
+                for (x-pos y-pos) = `(,(* x 48) ,(* y 20)) do
                 (if (evenp y)
-                  (incf x-pos 49))
-                (draw-entity tile x-pos y-pos)))))
+                  (incf x-pos 36))
+                (gl:with-pushed-matrix
+                  (gl:rotate 90 0 0 1)
+                  (gl:push-name y)
+                  (draw-entity tile x-pos y-pos))))))

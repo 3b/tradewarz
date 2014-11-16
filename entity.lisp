@@ -30,7 +30,7 @@
 (defun draw-entity (name x y)
   (let* ((entity (gethash name (entities (scene *game*))))
          (primitive (if (lines entity)
-                      :triangle-strips
+                      :triangle-strip
                       :triangle-fan))
          (lines (or (lines entity)
                     (make-polygon (sides entity) (color entity)))))
