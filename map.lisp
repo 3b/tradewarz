@@ -33,7 +33,7 @@
           (gl:push-name x)
           (loop for y from 0 to (1- (height world-map))
                 for tile = (aref (tiles world-map) y x)
-                for (x-pos y-pos) = `(,(* x 48) ,(* y 20)) do
+                for (x-pos y-pos) = `(,(* x 72) ,(* y 20)) do
                 (if (evenp y)
                   (incf x-pos 36))
                 (gl:with-pushed-matrix
