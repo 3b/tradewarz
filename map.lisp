@@ -17,22 +17,19 @@
 (defun current-map ()
   (world-map (current-scene)))
 
-(defun hex-tile-offset (world-map x y)
-  (let* ((tile (aref (tiles world-map) y x))
-         (tile-size (tile-size world-map))
-         (offset-x (* x (* (car tile-size) 3/2)))
-         (offset-y (* y (* (cadr tile-size) 5/12))))
-    (when (evenp y)
-      (incf offset-x (* (car tile-size) 3/4)))
-    (gl:with-pushed-matrix
-      (gl:rotate 90 0 0 1)
-      (apply #'draw-entity tile `(,offset-x ,offset-y)))))
-
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
 (defun generate-map ()
-  (let ((world-map (current-map)))
-    (loop for x from 0 to (1- (width world-map)) do
-          (loop for y from 0 to (1- (height world-map)) do
-                (hex-tile-offset world-map x y)))))
+  (loop for x from 0 to (1- (width (current-map))) do
+        (loop for y from 0 to (1- (height (current-map))) do
+              (draw-tile (tile-shape (current-map)) x y))))
+
+(defmethod draw-tile ((shape (eql :hexagon)) x y)
+  (let* ((tile (aref (tiles (current-map)) y x))
+         (tile-size (tile-size (current-map)))
+         (offset-x (* x (* (car tile-size) 3/2)))
+         (offset-y (* y (* (cadr tile-size) 5/12))))
+    (when (evenp y)
+      (incf offset-x (* (car tile-size) 3/4)))
+    (apply #'draw-entity tile `(,offset-x ,offset-y))))

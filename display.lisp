@@ -34,6 +34,6 @@
   (gl:matrix-mode :modelview)
   (gl:load-identity)
   (glu:look-at 0 150 -500 0 0 0 0 0 -1)
-  (gl:translate 220 -400 -100)
+  (gl:translate -400 -400 0)
   (gl:enable :texture-2d :blend :depth-test)
   (gl:blend-func :src-alpha :one-minus-src-alpha))
