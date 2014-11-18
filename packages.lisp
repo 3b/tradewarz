@@ -1,3 +1,3 @@
 (defpackage #:tradewarz
-  (:use cl)
+  (:use cl :alexandria)
   (:export start-game))

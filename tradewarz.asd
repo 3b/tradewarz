@@ -8,7 +8,7 @@
                lispbuilder-sdl-image
                cl-opengl
                cl-glu
-               cl-fad
+               alexandria
                bordeaux-threads)
   :serial t
   :components ((:file "packages")
@@ -16,6 +16,7 @@
                (:file "display")
                (:file "input")
                (:file "shape")
+               (:file "model")
                (:file "entity")
                (:file "map")
                (:file "scene")

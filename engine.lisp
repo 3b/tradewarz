@@ -28,10 +28,7 @@
 
 (defun main-loop ()
   (gl:clear :color-buffer-bit :depth-buffer-bit)
-  (generate-map)
-  (gl:with-pushed-matrix
-    (gl:translate 0 0 -1)
-    (draw-entity :alien-small 300 400))
+  (update-entities)
   (gl:flush)
   (sdl:update-display))
 
@@ -41,5 +38,7 @@
         (sdl:with-init ()
           (make-game)
           (make-scene :name "demo")
+          (make-entity :alien-small)
+          (move (get-entity 226) 0 0 -1)
           (define-events)))
     :name "tradewarz"))

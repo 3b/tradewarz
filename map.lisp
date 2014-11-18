@@ -27,9 +27,10 @@
 
 (defmethod draw-tile ((shape (eql :hexagon)) x y)
   (let* ((tile (aref (tiles (current-map)) y x))
+         (entity (make-entity tile))
          (tile-size (tile-size (current-map)))
          (offset-x (* x (* (car tile-size) 0.75)))
          (offset-y (* y (* (cadr tile-size) (* 0.43301270189221935 2)))))
     (when (evenp x)
       (incf offset-y (* (cadr tile-size) 0.43301270189221935)))
-      (apply #'draw-entity tile `(,offset-x ,offset-y))))
+    (move entity offset-x offset-y 0)))
