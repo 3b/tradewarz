@@ -31,7 +31,7 @@
   (setf (z entity) (+ z (z entity))))
 
 (defun update-entities ()
-  (loop for entity in (hash-table-values (entities (current-scene)))
+  (loop for entity in (nreverse (hash-table-values (entities (current-scene))))
         for pos = `(,(x entity) ,(y entity) ,(z entity)) do
         (gl:with-pushed-matrix
           (apply #'gl:translate pos)
