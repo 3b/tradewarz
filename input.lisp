@@ -16,7 +16,7 @@
 
 (defun key-up (key state mod-key scancode unicode)
   (declare (ignore state mod-key scancode unicode))
-  (format t "Key ~a released" key))
+  (format t "Key ~a released~%" key))
 
 (defun mouse-down (button state x y)
   (declare (ignore state))
