@@ -23,6 +23,16 @@
                       :mod-key mod-key
                       :unicode unicode)
      (key-down key state mod-key scancode unicode))
+    (:key-up-event (:state state
+                    :scancode scancode
+                    :key key
+                    :mod-key mod-key
+                    :unicode unicode)
+     (key-up key state mod-key scancode unicode))
+    (:mouse-button-down-event (:button button :state state :x x :y y)
+     (mouse-down button state x y))
+    (:mouse-button-up-event (:button button :state state :x x :y y)
+     (mouse-up button state x y))
     (:idle ()
      (restartable (main-loop)))))
 
@@ -38,7 +48,9 @@
         (sdl:with-init ()
           (make-game)
           (make-scene :name "demo")
-          (make-entity :alien-small)
-          (move (get-entity 226) 0 0 -1)
+          (make-entity :alien-small
+                       :layer-name :mob)
+          (move (get-entity 0 :layer-name :mob) 0 0 -64)
+          (rotate (get-entity 0 :layer-name :mob) 90 1 0 0)
           (define-events)))
     :name "tradewarz"))

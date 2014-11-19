@@ -27,7 +27,7 @@
 
 (defmethod draw-tile ((shape (eql :hexagon)) x y)
   (let* ((tile (aref (tiles (current-map)) y x))
-         (entity (make-entity tile))
+         (entity (make-entity tile :layer-name :map))
          (tile-size (tile-size (current-map)))
          (offset-x (* x (* (car tile-size) 0.75)))
          (offset-y (* y (* (cadr tile-size) (* 0.43301270189221935 2)))))

@@ -6,12 +6,24 @@
    (world-map :accessor world-map)
    (models :reader models
              :initform (make-hash-table))
-   (entities :reader entities
-             :initform (make-hash-table))))
+   (layer-order :reader layer-order
+                :initform '(:map :mob))
+   (layers :reader layers
+           :initform (make-hash-table))))
 
 (defun make-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
+  (make-layers)
   (generate-map))
+
+(defun make-layers ()
+  (loop for layer-name in (layer-order (current-scene))
+        for layers = (layers (current-scene)) do
+        (setf (gethash layer-name layers)
+              (make-array 10 :fill-pointer 0 :adjustable t))))
+
+(defun get-layer (layer-name)
+  (gethash layer-name (layers (current-scene))))
 
 (defun current-scene ()
   (scene *game*))
