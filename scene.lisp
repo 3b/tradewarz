@@ -22,8 +22,8 @@
         (setf (gethash layer-name layers)
               (make-array 10 :fill-pointer 0 :adjustable t))))
 
-(defun get-layer (layer-name)
-  (gethash layer-name (layers (current-scene))))
+(defun get-layer (layer)
+  (gethash layer (layers (current-scene))))
 
 (defun current-scene ()
   (scene *game*))

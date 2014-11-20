@@ -49,8 +49,8 @@
           (make-game)
           (make-scene :name "demo")
           (make-entity :alien-small
-                       :layer-name :mob)
-          (move (get-entity 0 :layer-name :mob) 0 0 -64)
-          (rotate (get-entity 0 :layer-name :mob) 90 1 0 0)
+                       :layer :mob)
+          (move (get-entity 0 :layer :mob) '(0 0 -32))
+          (rotate (get-entity 0 :layer :mob) '(90 0 0))
           (define-events)))
     :name "tradewarz"))

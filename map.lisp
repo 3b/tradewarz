@@ -25,12 +25,22 @@
         (loop for y from 0 to (1- (height (current-map))) do
               (draw-tile (tile-shape (current-map)) x y))))
 
-(defmethod draw-tile ((shape (eql :hexagon)) x y)
+(defmethod draw-tile :around (shape x y &key size location)
   (let* ((tile (aref (tiles (current-map)) y x))
-         (entity (make-entity tile :layer-name :map))
-         (tile-size (tile-size (current-map)))
-         (offset-x (* x (* (car tile-size) 0.75)))
-         (offset-y (* y (* (cadr tile-size) (* 0.43301270189221935 2)))))
+         (entity (make-entity tile :layer :map))
+         (size (tile-size (current-map)))
+         (location (mapcar #'* size (list x y 0)))
+         (offset (call-next-method shape x y
+                                   :size size
+                                   :location location)))
+    (move entity offset)))
+
+(defmethod draw-tile (shape x y &key size location)
+  location)
+
+(defmethod draw-tile ((shape (eql :hexagon)) x y &key size location)
+  (let* ((unit-offset (list 3/4 0.4330127 1))
+         (offset (mapcar #'* location unit-offset (list 1 2 1))))
     (when (evenp x)
-      (incf offset-y (* (cadr tile-size) 0.43301270189221935)))
-    (move entity offset-x offset-y 0)))
+      (incf (cadr offset) (* (cadr size) (cadr unit-offset))))
+    offset))
