@@ -12,6 +12,7 @@
   :serial t
   :components ((:file "packages")
                (:file "utils")
+               (:file "vector")
                (:file "display")
                (:file "input")
                (:file "shape")

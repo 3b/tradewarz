@@ -10,7 +10,7 @@
            :initform '(0 0 0))
    (rotation :accessor rotation
              :initarg :rotation
-             :initform '(0 0 0))))
+             :initform '(0 0 0 0))))
 
 (defun get-entity (id &key layer)
   (aref (get-layer layer) id))
@@ -34,7 +34,5 @@
         (loop for entity being the elements of layer do
               (gl:with-pushed-matrix
                 (apply #'gl:translate (offset entity))
-                (gl:rotate (first (rotation entity)) 1 0 0)
-                (gl:rotate (second (rotation entity)) 0 1 0)
-                (gl:rotate (third (rotation entity)) 0 0 1)
+                (apply #'gl:rotate (rotation entity))
                 (draw-model (model entity))))))
