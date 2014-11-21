@@ -34,5 +34,5 @@
   (gl:load-identity)
   (glu:perspective 60.0 (/ (width object) (height object)) 1 1000.0)
   (glu:look-at 0 150 -300 0 0 0 0 0 -1)
-  (gl:enable :texture-2d :blend :depth-test)
+  (gl:enable :cull-face :texture-2d :blend :depth-test)
   (gl:blend-func :src-alpha :one-minus-src-alpha))
