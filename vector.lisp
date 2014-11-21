@@ -2,11 +2,18 @@
 
 (defstruct (ax-vector
              (:constructor make-vector (&optional x y z))
-             (:conc-name v))
-  (x 0)
-  (y 0)
-  (z 0))
+             (:conc-name v)
+             (:print-function print-vector))
+  (x 0.0)
+  (y 0.0)
+  (z 0.0))
 
+(defun print-vector (struct stream depth)
+  (declare (ignore depth))
+  (print-unreadable-object (struct stream)
+    (format stream "~a ~a ~a" (vx struct) (vy struct) (vz struct))
+    )
+  )
 (defun vector-copy (src dest)
   "Copy a vector's components to another vector"
   (psetf (vx dest) (vx src)

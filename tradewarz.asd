@@ -13,6 +13,7 @@
   :components ((:file "packages")
                (:file "utils")
                (:file "vector")
+               (:file "matrix")
                (:file "display")
                (:file "input")
                (:file "shape")
