@@ -29,11 +29,11 @@
         (vz src) 0)
   src)
 
-(defun vector-modify (src x y z)
+(defun vector-modify (src &optional x y z)
   "Assign new components to a vector"
-  (setf (vx src) x
-        (vy src) y
-        (vz src) z)
+  (setf (vx src) (or x (vx src))
+        (vy src) (or y (vy src))
+        (vz src) (or z (vz src)))
   src)
 
 (defun vector->list (src)
