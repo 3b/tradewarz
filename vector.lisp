@@ -9,9 +9,9 @@
 
 (defun vector-copy (src dest)
   "Copy a vector's components to another vector"
-  (setf (vx dest) (vx src)
-        (vy dest) (vy src)
-        (vz dest) (vz src))
+  (psetf (vx dest) (vx src)
+         (vy dest) (vy src)
+         (vz dest) (vz src))
   dest)
 
 (defun vector-copy-new (src)
@@ -55,9 +55,9 @@
 
 (defun vector-add (src1 src2 dest)
   "Store the sum of two vectors in an existing vector"
-  (setf (vx dest) (+ (vx src1) (vx src2))
-        (vy dest) (+ (vy src1) (vy src2))
-        (vz dest) (+ (vz src1) (vz src2)))
+  (psetf (vx dest) (+ (vx src1) (vx src2))
+         (vy dest) (+ (vy src1) (vy src2))
+         (vz dest) (+ (vz src1) (vz src2)))
   dest)
 
 (defun vector-add-new (src1 src2)
@@ -66,9 +66,9 @@
 
 (defun vector-subtract (src1 src2 dest)
   "Store the difference of two vectors in an existing vector"
-  (setf (vx dest) (- (vx src1) (vx src2))
-        (vy dest) (- (vy src1) (vy src2))
-        (vz dest) (- (vz src1) (vz src2)))
+  (psetf (vx dest) (- (vx src1) (vx src2))
+         (vy dest) (- (vy src1) (vy src2))
+         (vz dest) (- (vz src1) (vz src2)))
   dest)
 
 (defun vector-subtract-new (src1 src2)
@@ -77,9 +77,9 @@
 
 (defun vector-multiply (src1 src2 dest)
   "Store the product of two vectors in an existing vector"
-  (setf (vx dest) (* (vx src1) (vx src2))
-        (vy dest) (* (vy src1) (vy src2))
-        (vz dest) (* (vz src1) (vz src2)))
+  (psetf (vx dest) (* (vx src1) (vx src2))
+         (vy dest) (* (vy src1) (vy src2))
+         (vz dest) (* (vz src1) (vz src2)))
   dest)
 
 (defun vector-multiply-new (src1 src2)
@@ -93,7 +93,7 @@
         (vz src) (* (vz src) scalar))
   src)
 
-(defun vector-scale (src scalar)
+(defun vector-scale-new (src scalar)
   "Scale the length of a vector as a new vector"
   (vector-scale (vector-copy-new src) scalar))
 
