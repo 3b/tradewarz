@@ -5,12 +5,26 @@
        :initarg :id)
    (model :reader model
           :initarg :model)
+   (parent :accessor parent
+           :initarg :parent
+           :initform nil)
+   (children :accessor children
+             :initarg :children
+             :initform nil)
+   (local-basis :accessor local-basis
+                :initarg :local-basis
+                :initform (matrix-identity-new))
+   (world-basis :accessor world-basis
+                :initarg :world-basis
+                :initform (matrix-identity-new))
    (offset :accessor offset
-           :initarg :offset
            :initform '(0 0 0))
    (rotation :accessor rotation
              :initarg :rotation
              :initform '(0 0 0 0))))
+
+(defmethod print-object ((object entity) stream)
+  (format stream "Entity: ~:(~a~)" (model object)))
 
 (defun get-entity (id &key layer)
   (aref (get-layer layer) id))
@@ -29,9 +43,8 @@
   (setf (rotation entity) angles))
 
 (defun update-entities ()
-  (loop for layer-name in (layer-order (current-scene))
-        for layer = (get-layer layer-name) do
-        (loop for entity being the elements of layer do
+  (loop for layer-name in (layer-order (current-scene)) do
+        (loop for entity in (get-entities layer-name) do
               (gl:with-pushed-matrix
                 (apply #'gl:translate (offset entity))
                 (apply #'gl:rotate (rotation entity))

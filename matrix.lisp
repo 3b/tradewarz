@@ -82,7 +82,7 @@
 
 (defun matrix-identity-new ()
   "Create a new identity matrix"
-  (matrix-identity (make-matrix)))j[Maj
+  (matrix-identity (make-matrix)))
 
 (defun matrix-multiply (src1 src2 dest)
   "Store the product of two matrices in an existing matrix"

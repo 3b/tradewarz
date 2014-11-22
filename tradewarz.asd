@@ -8,6 +8,7 @@
                lispbuilder-sdl-image
                cl-opengl
                cl-glu
+               alexandria
                bordeaux-threads)
   :serial t
   :components ((:file "packages")
@@ -21,4 +22,5 @@
                (:file "entity")
                (:file "map")
                (:file "scene")
+               (:file "frame")
                (:file "engine")))
