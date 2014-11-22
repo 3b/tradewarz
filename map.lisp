@@ -36,6 +36,7 @@
     (move entity offset)))
 
 (defmethod draw-tile (shape x y &key size location)
+  (declare (ignore size))
   location)
 
 (defmethod draw-tile ((shape (eql :hexagon)) x y &key size location)
