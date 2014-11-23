@@ -54,8 +54,7 @@
                                  :layer :mob))
                 (e2 (make-entity :alien-small
                                  :layer :mob)))
-            (push e2 (children e1))
-            (setf (parent e2) e1))
+            (add-child e1 e2))
 
           (move (get-entity 1 :layer :mob) '(0 0 1))
           (move (get-entity 0 :layer :mob) '(0 0 -32))

@@ -10,7 +10,7 @@
            :initform nil)
    (children :accessor children
              :initarg :children
-             :initform nil)
+             :initform (make-hash-table :test 'eq))
    (local-basis :accessor local-basis
                 :initarg :local-basis
                 :initform (matrix-identity-new))
@@ -34,6 +34,10 @@
          (entity (make-instance 'entity :id (length layer) :model model)))
     (vector-push-extend entity layer)
     entity))
+
+(defmethod add-child ((parent entity) (child entity))
+  (setf (gethash child (children parent)) child)
+  (setf (parent child) parent))
 
 (defmethod move ((entity entity) offset)
   (let ((offset (mapcar #'+ (offset entity) offset)))
