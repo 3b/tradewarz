@@ -47,9 +47,9 @@
   (setf (rotation entity) angles))
 
 (defun update-entities ()
-  (loop for layer-name in (layer-order (current-scene)) do
-        (loop for entity in (get-entities layer-name) do
-              (gl:with-pushed-matrix
-                (apply #'gl:translate (offset entity))
-                (apply #'gl:rotate (rotation entity))
-                (draw-model (model entity))))))
+  (loop for layer-name in (layer-order (current-scene))
+        do (loop for entity in (get-entities layer-name)
+                 do (gl:with-pushed-matrix
+                      (apply #'gl:translate (offset entity))
+                      (apply #'gl:rotate (rotation entity))
+                      (draw-model (model entity))))))

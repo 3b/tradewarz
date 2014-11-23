@@ -20,12 +20,7 @@
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
-(defun generate-map ()
-  (loop for x from 0 to (1- (width (current-map))) do
-        (loop for y from 0 to (1- (height (current-map))) do
-              (draw-tile (tile-shape (current-map)) x y))))
-
-(defmethod draw-tile :around (shape x y &key size location)
+(defmethod draw-tile :around (shape x y &key)
   (let* ((tile (aref (tiles (current-map)) y x))
          (entity (make-entity tile :layer :map))
          (size (tile-size (current-map)))
@@ -45,3 +40,8 @@
     (when (evenp x)
       (incf (cadr offset) (* (cadr size) (cadr unit-offset))))
     offset))
+
+(defun generate-map ()
+  (loop for x to (1- (width (current-map)))
+        do (loop for y to (1- (height (current-map)))
+                 do (draw-tile (tile-shape (current-map)) x y))))

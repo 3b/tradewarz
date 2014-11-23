@@ -62,7 +62,7 @@
     (gl:with-pushed-matrix
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
-        (loop for (object texture color) in (vertices model) do
-              (apply #'gl:color color)
-              (apply #'gl:tex-coord texture)
-              (apply #'gl:vertex (mapcar #'* object size)))))))
+        (loop for (object texture color) in (vertices model)
+              do (apply #'gl:color color)
+                 (apply #'gl:tex-coord texture)
+                 (apply #'gl:vertex (mapcar #'* object size)))))))

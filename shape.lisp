@@ -15,7 +15,7 @@
   (nreverse
     (loop with radius = 0.5
           repeat (1+ sides)
-          for slice from 0 by (/ sides)
+          for slice by (/ sides)
           for angle = (* slice 2 pi)
           for x = (cos angle)
           for y = (sin angle)
