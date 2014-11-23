@@ -5,7 +5,7 @@
          :initarg :name)
    (root :reader root
          :initarg :root
-         :initform :world)
+         :initform (make-instance 'scene-node))
    (world-map :accessor world-map)
    (models :reader models
              :initform (make-hash-table))
@@ -13,6 +13,32 @@
                 :initform '(:map :mob))
    (layers :reader layers
            :initform (make-hash-table))))
+
+(defclass scene-node (entity)
+  ((parent :accessor parent
+           :initarg :parent
+           :initform nil)
+   (children :accessor children
+             :initarg :children
+             :initform (make-hash-table :test 'eq))
+   (local-basis :accessor local-basis
+                :initarg :local-basis
+                :initform (matrix-identity-new))
+   (world-basis :accessor world-basis
+                :initarg :world-basis
+                :initform (matrix-identity-new))
+   (rotation :accessor rotation
+             :initarg :rotation
+             :initform (make-vector))
+   (movement :accessor translation
+             :initarg :translation
+             :initform (make-vector))
+   (rotatingp :accessor rotatingp
+              :initarg :rotatingp
+              :initform nil)
+   (movingp :accessor movingp
+            :initarg :movingp
+            :initform nil)))
 
 (defmethod initialize-instance :after ((object scene) &key)
   (loop with data = (read-data "scenes" (name object))

@@ -28,7 +28,8 @@
          (offset (call-next-method shape x y
                                    :size size
                                    :location location)))
-    (move entity offset)))
+    ;(move entity offset)
+    ))
 
 (defmethod draw-tile (shape x y &key size location)
   (declare (ignore size))
@@ -42,6 +43,6 @@
     offset))
 
 (defun generate-map ()
-  (loop for x to (1- (width (current-map)))
-        do (loop for y to (1- (height (current-map)))
+  (loop for x below (width (current-map))
+        do (loop for y below (height (current-map))
                  do (draw-tile (tile-shape (current-map)) x y))))
