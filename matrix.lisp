@@ -108,3 +108,15 @@
 (defun matrix-multiple-new (src1 src2)
   "Store the product of two matrices in a new matrix"
   (matrix-multiply src1 src2 (make-matrix)))
+
+(defun matrix-translate (vec dest)
+  "Add a translation vector to a matrix"
+  (with-matrix (m dest)
+    (psetf m03 (+ m03 (vx vec))
+           m13 (+ m13 (vy vec))
+           m23 (+ m23 (vz vec))))
+  dest)
+
+(defun matrix-translate-new (vec dest)
+  "Add as translation vector to a matrix as a new matrix"
+  (matrix-translate (matrix-copy-new dest) vec))

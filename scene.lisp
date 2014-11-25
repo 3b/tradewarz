@@ -27,6 +27,12 @@
    (world-basis :accessor world-basis
                 :initarg :world-basis
                 :initform (matrix-identity-new))
+   (dv :accessor dv
+       :initarg :dv
+       :initform (make-vector))
+   (dr :accessor dr
+       :initarg :dr
+       :initform (make-vector))
    (rotation :accessor rotation
              :initarg :rotation
              :initform (make-vector))
@@ -90,10 +96,26 @@
 (defun add-node (node &key parent)
   (add-child (or parent (root (current-scene))) node)) 
 
-(defun update-scene (&optional (parent (root (current-scene))))
-  (update-node parent)
-  (loop for child being the hash-values of (children parent)
-        do (update-scene child)))
+(defun loop-scene (func &optional parent)
+  (let ((parent (or parent (root (current-scene)))))
+    (funcall func parent)
+    (loop for child being the hash-values of (children parent)
+          do (loop-scene func child))))
+
+(defun update-scene ()
+  (loop-scene #'update-node))
 
 (defun update-node (node)
-  (print node))
+  (update-local-basis node)
+  (update-world-basis node))
+
+(defun update-world-basis (node)
+  (if (parent node)
+    (matrix-multiply
+      (world-basis (parent node))
+      (local-basis node)
+      (world-basis node))))
+
+(defun update-local-basis (node)
+  (matrix-translate (local-basis node) (dv node))
+  (vector-clear (dv node)))
