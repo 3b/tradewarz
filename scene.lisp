@@ -55,13 +55,24 @@
             (name object)
             entity-count)))
 
-(defun make-scene (&key name)
+(defun load-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
   (make-layers)
-  (generate-map))
+  (generate-map)
+  (let ((e1 (make-entity :alien-small
+                         :layer :mob))
+        (e2 (make-entity :alien-small
+                         :layer :mob)))
+    (add-node e1)
+    (add-node e2 :parent e1)))
 
 (defun current-scene ()
   (scene *game*))
+
+(defun load-models (scene asset)
+  (loop for (name data) in (read-data "assets" asset)
+        for model = (apply #'make-instance 'model :name name data)
+        do (setf (gethash name (models scene)) model)))
 
 (defun make-layers ()
   (loop for layer-name in (layer-order (current-scene))
@@ -76,11 +87,13 @@
   (loop for entity being the elements of (get-layer layer)
         collect entity))
 
-(defun print-models ()
-  (loop for model being the hash-value of (models (current-scene))
-        do (print model)))
+(defun add-node (node &key parent)
+  (add-child (or parent (root (current-scene))) node)) 
 
-(defun load-models (scene asset)
-  (loop for (name data) in (read-data "assets" asset)
-        for model = (apply #'make-instance 'model :name name data)
-        do (setf (gethash name (models scene)) model)))
+(defun update-scene (&optional (parent (root (current-scene))))
+  (update-node parent)
+  (loop for child being the hash-values of (children parent)
+        do (update-scene child)))
+
+(defun update-node (node)
+  (print node))

@@ -22,5 +22,4 @@
                (:file "entity")
                (:file "map")
                (:file "scene")
-               (:file "frame")
                (:file "engine")))

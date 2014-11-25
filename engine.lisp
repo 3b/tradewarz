@@ -12,7 +12,8 @@
           :initform nil)))
 
 (defun make-game ()
-  (setf *game* (make-instance 'game)))
+  (setf *game* (make-instance 'game))
+  (load-scene :name "demo"))
 
 (defun define-events ()
   (sdl:with-events ()
@@ -38,8 +39,7 @@
 
 (defun main-loop ()
   (gl:clear :color-buffer-bit :depth-buffer-bit)
-  (step-frame)
-  ;(update-entities)
+  (update-scene)
   (gl:flush)
   (sdl:update-display))
 
@@ -48,17 +48,5 @@
     #'(lambda ()
         (sdl:with-init ()
           (make-game)
-          (make-scene :name "demo")
-
-          ;; test making an entity the parent of another
-          (let ((e1 (make-entity :alien-small
-                                 :layer :mob))
-                (e2 (make-entity :alien-small
-                                 :layer :mob)))
-            (add-child e1 e2))
-
-;          (move (get-entity 1 :layer :mob) '(0 0 1))
-;          (move (get-entity 0 :layer :mob) '(0 0 -32))
-;          (rotate (get-entity 0 :layer :mob) '(90 1 0 0))
           (define-events)))
     :name "tradewarz"))
