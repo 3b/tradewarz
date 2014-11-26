@@ -33,6 +33,9 @@
    (dr :accessor dr
        :initarg :dr
        :initform (make-vector))
+   (dtv :accessor dtv
+        :initarg :dtv
+        :initform (make-vector))
    (rotation :accessor rotation
              :initarg :rotation
              :initform (make-vector))
@@ -69,8 +72,15 @@
                          :layer :mob))
         (e2 (make-entity :alien-small
                          :layer :mob)))
+
     (add-node e1)
-    (add-node e2 :parent e1)))
+    (add-node e2 :parent e1)
+    (setf (movingp e1) t)
+    (setf (movingp e2) t)
+    (vector-modify (dv e2) -1 -1 0)
+    (vector-modify (dtv e1) 0.001 0.001 0)
+    
+    ))
 
 (defun current-scene ()
   (scene *game*))
@@ -117,8 +127,10 @@
       (world-basis node))))
 
 (defun update-local-basis (node)
-  (matrix-translate (local-basis node) (dv node))
-  (vector-clear (dv node)))
+  (matrix-translate (dv node) (local-basis node))
+  (vector-clear (dv node))
+  (when (movingp node)
+    (matrix-translate (dtv node) (local-basis node))))
 
 (defun render-scene ()
   (loop-scene #'render-node))
