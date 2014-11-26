@@ -119,3 +119,21 @@
 (defun update-local-basis (node)
   (matrix-translate (local-basis node) (dv node))
   (vector-clear (dv node)))
+
+(defun render-scene ()
+  (loop-scene #'render-node))
+
+(defun render-node (node)
+  (let ((model (get-model (model node))))
+    (when model
+      (gl:bind-texture :texture-2d (texture-id model))
+      (gl:with-primitive (primitive model)
+        (loop with vertex = (make-vector)
+              with size = (get-size model)
+              for (object texture color) in (vertices model)
+              do (apply #'gl:color color)
+                 (apply #'gl:tex-coord texture)
+                 (apply #'vector-modify vertex object)
+                 (matrix-apply (world-basis node) vertex vertex)
+                 (apply #'gl:vertex
+                        (mapcar #'* (vector->list vertex) size)))))))

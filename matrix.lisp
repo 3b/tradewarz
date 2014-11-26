@@ -120,3 +120,22 @@
 (defun matrix-translate-new (vec dest)
   "Add as translation vector to a matrix as a new matrix"
   (matrix-translate (matrix-copy-new dest) vec))
+
+(defun matrix-apply (basis point dest)
+  (with-matrix (m basis)
+    (psetf (vx dest) (+ (* m00 (vx point))
+                        (* m01 (vy point))
+                        (* m02 (vz point))
+                        (* m03 1.0))
+           (vy dest) (+ (* m10 (vx point))
+                        (* m11 (vy point))
+                        (* m12 (vz point))
+                        (* m13 1.0))
+           (vz dest) (+ (* m20 (vx point))
+                        (* m21 (vy point))
+                        (* m22 (vz point))
+                        (* m23 1.0))))
+  dest)
+
+(defun matrix-apply-new (basis point)
+  (matrix-apply basis point (make-vector)))
