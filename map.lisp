@@ -20,26 +20,22 @@
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
-(defmethod draw-tile :around (shape x y &key)
+(defmethod draw-tile :around (shape x y)
   (let* ((tile (aref (tiles (current-map)) y x))
          (entity (make-entity tile :layer :map))
-         (size (tile-size (current-map)))
-         (location (mapcar #'* size (list x y 0)))
-         (offset (call-next-method shape x y
-                                   :size size
-                                   :location location)))
-    ;(move entity offset)
-    ))
+         (offset (call-next-method shape x y)))
+    (add-node entity)
+    (apply #'vector-modify (dv entity) offset)))
 
-(defmethod draw-tile (shape x y &key size location)
-  (declare (ignore size))
-  location)
+(defmethod draw-tile (shape x y)
+  (list x y 0))
 
-(defmethod draw-tile ((shape (eql :hexagon)) x y &key size location)
+(defmethod draw-tile ((shape (eql :hexagon)) x y)
   (let* ((unit-offset (list 3/4 0.4330127 1))
+         (location (list x y 0))
          (offset (mapcar #'* location unit-offset (list 1 2 1))))
     (when (evenp x)
-      (incf (cadr offset) (* (cadr size) (cadr unit-offset))))
+      (incf (cadr offset) (cadr unit-offset)))
     offset))
 
 (defun generate-map ()

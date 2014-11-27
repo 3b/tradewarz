@@ -68,19 +68,20 @@
   (setf (scene *game*) (make-instance 'scene :name name))
   (make-layers)
   (generate-map)
+
+  ;; test entities
   (let ((e1 (make-entity :alien-small
                          :layer :mob))
         (e2 (make-entity :alien-small
+                         :layer :mob))
+        (e3 (make-entity :alien-small
                          :layer :mob)))
-
     (add-node e1)
     (add-node e2 :parent e1)
+    (add-node e3)
     (setf (movingp e1) t)
     (setf (movingp e2) t)
-    (vector-modify (dv e2) -1 -1 0)
-    (vector-modify (dtv e1) 0.001 0.001 0)
-    
-    ))
+    (vector-modify (dv e2) -1 0 0)))
 
 (defun current-scene ()
   (scene *game*))

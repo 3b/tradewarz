@@ -91,17 +91,14 @@
            c10 (+ (* a10 b00) (* a11 b10) (* a12 b20) (* a13 b30))
            c20 (+ (* a20 b00) (* a21 b10) (* a22 b20) (* a23 b30))
            c30 (+ (* a30 b00) (* a31 b10) (* a32 b20) (* a33 b30))
-
            c01 (+ (* a00 b01) (* a01 b11) (* a02 b21) (* a03 b31))
            c11 (+ (* a10 b01) (* a11 b11) (* a12 b21) (* a13 b31))
            c21 (+ (* a20 b01) (* a21 b11) (* a22 b21) (* a23 b31))
            c31 (+ (* a30 b01) (* a31 b11) (* a32 b21) (* a33 b31))
-
            c02 (+ (* a00 b02) (* a01 b12) (* a02 b22) (* a03 b32))
            c12 (+ (* a10 b02) (* a11 b12) (* a12 b22) (* a13 b32))
            c22 (+ (* a20 b02) (* a21 b12) (* a22 b22) (* a23 b32))
            c32 (+ (* a30 b02) (* a31 b12) (* a32 b22) (* a33 b32))
-
            c03 (+ (* a00 b03) (* a01 b13) (* a02 b23) (* a03 b33))
            c13 (+ (* a10 b03) (* a11 b13) (* a12 b23) (* a13 b33))
            c23 (+ (* a20 b03) (* a21 b13) (* a22 b23) (* a23 b33))
@@ -125,6 +122,7 @@
   (matrix-translate vec (matrix-copy-new dest)))
 
 (defun matrix-apply (basis point dest)
+  "Multiply a basis matrix by a point vector stored in the given destination"
   (with-matrix (m basis)
     (psetf (vx dest) (+ (* m00 (vx point))
                         (* m01 (vy point))
@@ -141,4 +139,5 @@
   dest)
 
 (defun matrix-apply-new (basis point)
+  "Multiply a basis matrix by a point vector stored in a new vector"
   (matrix-apply basis point (make-vector)))
