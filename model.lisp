@@ -29,9 +29,6 @@
   (when (image object)
     (setf (texture-id object) (load-texture (image object)))))
 
-(defmethod print-object ((object model) stream)
-  (format stream "Model: ~:(~a~)" (name object)))
-
 (defun get-model (name)
   (gethash name (models (current-scene))))
 

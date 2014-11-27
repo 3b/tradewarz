@@ -22,10 +22,10 @@
 
 (defmethod draw-tile :around (shape x y)
   (let* ((tile (aref (tiles (current-map)) y x))
-         (entity (make-entity tile :layer :map))
+         (node (make-node tile))
          (offset (call-next-method shape x y)))
-    (add-node entity)
-    (apply #'vector-modify (dv entity) offset)))
+    (add-node node)
+    (apply #'vector-modify (dv node) offset)))
 
 (defmethod draw-tile (shape x y)
   (list x y 0))

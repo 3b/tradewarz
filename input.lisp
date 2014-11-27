@@ -7,11 +7,7 @@
     (:sdl-key-left (gl:translate 5 0 0))
     (:sdl-key-right (gl:translate -5 0 0))
     (:sdl-key-up (gl:translate 0 5 0))
-    (:sdl-key-down (gl:translate 0 -5 0))
-    (:sdl-key-a (vector-modify (dtv (get-entity 0 :layer :mob)) -0.01 0 0))
-    (:sdl-key-d (vector-modify (dtv (get-entity 0 :layer :mob)) 0.01 0 0))
-    (:sdl-key-w (vector-modify (dtv (get-entity 0 :layer :mob)) 0 -0.01 0))
-    (:sdl-key-s (vector-modify (dtv (get-entity 0 :layer :mob)) 0 0.01 0))))
+    (:sdl-key-down (gl:translate 0 -5 0))))
 
 (defun key-up (key state mod-key scancode unicode)
   (declare (ignore state mod-key scancode unicode))

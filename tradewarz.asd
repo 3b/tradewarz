@@ -19,7 +19,6 @@
                (:file "input")
                (:file "shape")
                (:file "model")
-               (:file "entity")
                (:file "map")
                (:file "scene")
                (:file "engine")))
