@@ -60,15 +60,12 @@
   (generate-map)
 
   ;; test entities
-  (let ((e1 (make-node :alien-small))
-        (e2 (make-node :alien-small))
-        (e3 (make-node :alien-small)))
-    (add-node e1)
-    (add-node e2 :parent e1)
-    (add-node e3)
-    (setf (movingp e1) t)
-    (setf (movingp e2) t)
-    (vector-modify (dv e2) -1 0 0)))
+  (defparameter *e1* (make-node :alien-small))
+  
+    (add-node *e1*)
+    (vector-modify (dv *e1*) 1 1 -1)
+    (vector-modify (dr *e1*) 1.5 0 0)
+    )
 
 (defun current-scene ()
   (scene *game*))
@@ -112,8 +109,14 @@
 (defun update-local-basis (node)
   (matrix-translate (dv node) (local-basis node))
   (vector-clear (dv node))
+  (matrix-rotate (dr node) (local-basis node))
+  (vector-clear (dr node))
+  (when (rotatingp node)
+    (matrix-rotate (dr node) (local-basis node))
   (when (movingp node)
-    (matrix-translate (dtv node) (local-basis node))))
+    (matrix-translate (dtv node) (local-basis node)))
+    )
+  )
 
 (defun render-scene ()
   (loop-scene #'render-node))

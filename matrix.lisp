@@ -7,22 +7,10 @@
                                                   m30 m31 m32 m33))
              (:conc-name nil)
              (:print-function print-matrix))
-  (m00 0.0)
-  (m01 0.0)
-  (m02 0.0)
-  (m03 0.0)
-  (m10 0.0)
-  (m11 0.0)
-  (m12 0.0)
-  (m13 0.0)
-  (m20 0.0)
-  (m21 0.0)
-  (m22 0.0)
-  (m23 0.0)
-  (m30 0.0)
-  (m31 0.0)
-  (m32 0.0)
-  (m33 0.0))
+  (m00 0.0) (m01 0.0) (m02 0.0) (m03 0.0)
+  (m10 0.0) (m11 0.0) (m12 0.0) (m13 0.0)
+  (m20 0.0) (m21 0.0) (m22 0.0) (m23 0.0)
+  (m30 0.0) (m31 0.0) (m32 0.0) (m33 0.0))
 
 (defun print-matrix (struct stream depth)
   (declare (ignore depth))
@@ -141,3 +129,42 @@
 (defun matrix-apply-new (basis point)
   "Multiply a basis matrix by a point vector stored in a new vector"
   (matrix-apply basis point (make-vector)))
+
+(defun matrix-copy-rotation (src dest)
+  "Copy the rotation vectors from the source to the destination matrix"
+  (with-matrices ((s src) (d dest))
+    (psetf d00 s00 d01 s01 d02 s02
+           d10 s10 d11 s11 d12 s12
+           d20 s20 d21 s21 d22 s22))
+  dest)
+
+(defun matrix-copy-rotation-new (src)
+  "Copy the rotation vectors from the source to a new matrix"
+  (matrix-copy-rotation src (matrix-identity-new)))
+
+(defun matrix-rotate (vec src)
+  "Rotate a matrix"
+  (let ((dest (make-matrix))
+        (rotation (make-matrix))
+        (x (vx vec))
+        (y (vy vec))
+        (z (vz vec)))
+    (with-matrix (m rotation)
+      (matrix-identity rotation)
+      (psetf m00 (cos z) m10 (sin z) m01 (- (sin z)) m11 (cos z))
+      (matrix-multiply src rotation dest)
+      (matrix-copy-rotation dest src)
+      (psetf m00 1 m10 0 m20 0
+             m01 0 m11 (cos x) m21 (sin x)
+             m02 0 m12 (- (sin x)) m22 (cos x))
+      (matrix-multiply src rotation dest)
+      (matrix-copy-rotation dest src)
+      (psetf m00 (cos y) m10 0 m20 (- (sin y))
+             m01 0 m11 1 m21 0
+             m02 (sin y) m12 0 m22 (cos y))
+      (matrix-multiply src rotation dest)
+      (matrix-copy-rotation dest src))))
+
+(defun matrix-rotate-new (vec src)
+  "Rotate a matrix as a new matrix"
+  (matrix-rotate vec (matrix-copy-new src)))
