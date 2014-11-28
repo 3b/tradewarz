@@ -33,4 +33,5 @@
   (gl:matrix-mode :modelview)
   (glu:look-at 0 300 -100 0 0 0 0 0 -1)
   (gl:enable :texture-2d :blend :depth-test)
+  (gl:depth-func :lequal)
   (gl:blend-func :src-alpha :one-minus-src-alpha))

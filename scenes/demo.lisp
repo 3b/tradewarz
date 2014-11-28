@@ -1,7 +1,7 @@
 (:assets ("map" "alien")
  :world ((:width 13
           :height 25
-          :tile-size (64 64 0)
+          :tile-size (64 64 1)
           :tile-shape :hexagon
           :tiles #2a((:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)
                      (:hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex :hex)

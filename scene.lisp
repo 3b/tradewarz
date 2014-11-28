@@ -69,8 +69,7 @@
     (setf (movingp *e1*) t)
     (setf (rotatingp *e1*) t)
     (vector-modify (dv *e1*) 1 1 -1)
-    (vector-modify (dr *e1*) 0 0 0)
-    )
+    (vector-modify (dr *e1*) (/ pi 2) 0 0))
 
 (defun current-scene ()
   (scene *game*))
@@ -119,8 +118,7 @@
   (when (movingp node)
     (matrix-translate (dtv node) (local-basis node)))
   (when (rotatingp node)
-    (matrix-rotate (drv node) (local-basis node)))
-  )
+    (matrix-rotate (drv node) (local-basis node))))
 
 (defun render-scene ()
   (loop-scene #'render-node))
@@ -139,3 +137,15 @@
                  (matrix-apply (world-basis node) vertex vertex)
                  (apply #'gl:vertex
                         (mapcar #'* (vector->list vertex) size)))))))
+
+(defun update-entity-test (entity)
+  (let ((model (get-model (model entity))))
+    (gl:with-pushed-matrix
+      (apply #'gl:translate '(128 64 -32))
+      (gl:rotate 90 1 0 0)
+      (gl:bind-texture :texture-2d (texture-id model))
+      (gl:with-primitive (primitive model)
+        (loop for (object texture color) in (vertices model)
+              do (apply #'gl:color color)
+              (apply #'gl:tex-coord texture)
+              (apply #'gl:vertex (mapcar #'* object (get-size model))))))))

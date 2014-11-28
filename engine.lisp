@@ -41,6 +41,8 @@
   (gl:clear :color-buffer-bit :depth-buffer-bit)
   (update-scene)
   (render-scene)
+  (let ((e1 (make-node :alien-small)))
+    (update-entity-test e1))
   (gl:flush)
   (sdl:update-display))
 

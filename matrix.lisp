@@ -12,13 +12,6 @@
   (m20 0.0) (m21 0.0) (m22 0.0) (m23 0.0)
   (m30 0.0) (m31 0.0) (m32 0.0) (m33 0.0))
 
-(defun print-matrix (struct stream depth)
-  (declare (ignore depth))
-  (with-matrix (m struct)
-    (print-unreadable-object (struct stream)
-      (format
-        stream "~a ~a ~a ~a~%  ~a ~a ~a ~a~%  ~a ~a ~a ~a~%  ~a ~a ~a ~a"
-        m00 m01 m02 m03 m10 m11 m12 m13 m20 m21 m22 m23 m30 m31 m32 m33))))
 
 (defmacro with-matrix ((prefix matrix) &body body)
   `(with-accessors ((,(symbolicate prefix "00") m00)
@@ -45,6 +38,14 @@
     `(progn ,@body)
     `(with-matrix ,(car binds)
        (with-matrices ,(cdr binds) ,@body))))
+
+(defun print-matrix (struct stream depth)
+  (declare (ignore depth))
+  (with-matrix (m struct)
+    (print-unreadable-object (struct stream)
+      (format
+        stream "~a ~a ~a ~a~%  ~a ~a ~a ~a~%  ~a ~a ~a ~a~%  ~a ~a ~a ~a"
+        m00 m01 m02 m03 m10 m11 m12 m13 m20 m21 m22 m23 m30 m31 m32 m33))))
 
 (defun matrix-copy (src dest)
   "Copy a matrix to an existing matrix"
