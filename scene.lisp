@@ -64,12 +64,15 @@
 
   ;; test entities
   (defparameter *e1* (make-node :alien-small))
-  
-    (add-node *e1*)
-    (setf (movingp *e1*) t)
-    (setf (rotatingp *e1*) t)
-    (vector-modify (dv *e1*) 1 1 -1)
-    (vector-modify (dr *e1*) (/ pi 2) 0 0))
+  (defparameter *e2* (make-node :alien-small))
+  (add-node *e1*)
+  (add-node *e2*)
+  (setf (movingp *e1*) t)
+  (setf (rotatingp *e1*) t)
+  (vector-modify (dv *e1*) 1 1 -0.5)
+  (vector-modify (dv *e2*) 1 1 -0.5)
+  (vector-modify (dr *e1*) 1.5 0 0)
+  (vector-modify (dr *e2*) 1.5 0 0))
 
 (defun current-scene ()
   (scene *game*))
@@ -137,15 +140,3 @@
                  (matrix-apply (world-basis node) vertex vertex)
                  (apply #'gl:vertex
                         (mapcar #'* (vector->list vertex) size)))))))
-
-(defun update-entity-test (entity)
-  (let ((model (get-model (model entity))))
-    (gl:with-pushed-matrix
-      (apply #'gl:translate '(128 64 -32))
-      (gl:rotate 90 1 0 0)
-      (gl:bind-texture :texture-2d (texture-id model))
-      (gl:with-primitive (primitive model)
-        (loop for (object texture color) in (vertices model)
-              do (apply #'gl:color color)
-              (apply #'gl:tex-coord texture)
-              (apply #'gl:vertex (mapcar #'* object (get-size model))))))))

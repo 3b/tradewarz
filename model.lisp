@@ -14,7 +14,7 @@
           :initform :quad)
    (size :reader size
          :initarg :size
-         :initform '(32 32))
+         :initform '(32 32 32))
    (color :reader color
           :initarg :color
           :initform '(1 1 1))

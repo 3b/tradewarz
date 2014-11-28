@@ -31,7 +31,7 @@
   (gl:load-identity)
   (glu:perspective 60.0 (/ (width object) (height object)) 1 1000.0)
   (gl:matrix-mode :modelview)
-  (glu:look-at 0 300 -100 0 0 0 0 0 -1)
+  (glu:look-at 0 300 -150 0 0 0 0 0 -1)
   (gl:enable :texture-2d :blend :depth-test)
   (gl:depth-func :lequal)
   (gl:blend-func :src-alpha :one-minus-src-alpha))
