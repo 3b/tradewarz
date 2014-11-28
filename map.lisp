@@ -25,13 +25,14 @@
          (node (make-node tile))
          (offset (call-next-method shape x y)))
     (add-node node)
+    (vector-modify (dr node) 0 0 (/ pi 2))
     (apply #'vector-modify (dv node) offset)))
 
 (defmethod draw-tile (shape x y)
   (list x y 0))
 
 (defmethod draw-tile ((shape (eql :hexagon)) x y)
-  (let* ((unit-offset (list 3/4 0.4330127 1))
+  (let* ((unit-offset (list 0.4330127 3/4 1))
          (location (list x y 0))
          (offset (mapcar #'* location unit-offset (list 1 2 1))))
     (when (evenp x)

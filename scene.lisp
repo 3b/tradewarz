@@ -63,6 +63,7 @@
   (defparameter *e1* (make-node :alien-small))
   
     (add-node *e1*)
+    (setf (movingp *e1*) t)
     (vector-modify (dv *e1*) 1 1 -1)
     (vector-modify (dr *e1*) 1.5 0 0)
     )
@@ -111,11 +112,8 @@
   (vector-clear (dv node))
   (matrix-rotate (dr node) (local-basis node))
   (vector-clear (dr node))
-  (when (rotatingp node)
-    (matrix-rotate (dr node) (local-basis node))
   (when (movingp node)
     (matrix-translate (dtv node) (local-basis node)))
-    )
   )
 
 (defun render-scene ()

@@ -163,8 +163,37 @@
              m01 0 m11 1 m21 0
              m02 (sin y) m12 0 m22 (cos y))
       (matrix-multiply src rotation dest)
-      (matrix-copy-rotation dest src))))
+      (matrix-copy-rotation dest src)))
+  (matrix-stabilize src 1d-9))
 
 (defun matrix-rotate-new (vec src)
   "Rotate a matrix as a new matrix"
   (matrix-rotate vec (matrix-copy-new src)))
+
+(defun matrix-stabilize (src tolerance)
+  "Force each matrix element to 0 if below the tolerance level"
+  (with-matrix (m src)
+    (macrolet ((stabilize (place tol)
+                 `(when (< (abs ,place) ,tol)
+                    (setf ,place 0))))
+      (stabilize m00 tolerance)
+      (stabilize m01 tolerance)
+      (stabilize m02 tolerance)
+      (stabilize m03 tolerance)
+      (stabilize m10 tolerance)
+      (stabilize m11 tolerance)
+      (stabilize m12 tolerance)
+      (stabilize m13 tolerance)
+      (stabilize m20 tolerance)
+      (stabilize m21 tolerance)
+      (stabilize m22 tolerance)
+      (stabilize m23 tolerance)
+      (stabilize m30 tolerance)
+      (stabilize m31 tolerance)
+      (stabilize m32 tolerance)
+      (stabilize m33 tolerance)))
+  src)
+
+(defun matrix-stabilize-new (src tolerance)
+  "Force each matrix element to 0 if below the tolerance level as a new matrix"
+  (matrix-stabilize (matrix-copy-new src) tolerance))
