@@ -62,10 +62,10 @@
 (defun matrix-identity (src)
   "Set a matrix to the identity matrix"
   (with-matrix (m src)
-    (psetf m00 1 m01 0 m02 0 m03 0
-           m10 0 m11 1 m12 0 m13 0
-           m20 0 m21 0 m22 1 m23 0
-           m30 0 m31 0 m32 0 m33 1))
+    (psetf m00 1.0 m01 0.0 m02 0.0 m03 0.0
+           m10 0.0 m11 1.0 m12 0.0 m13 0.0
+           m20 0.0 m21 0.0 m22 1.0 m23 0.0
+           m30 0.0 m31 0.0 m32 0.0 m33 1.0))
   src)
 
 (defun matrix-identity-new ()
@@ -154,13 +154,13 @@
       (psetf m00 (cos z) m10 (sin z) m01 (- (sin z)) m11 (cos z))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)
-      (psetf m00 1 m10 0 m20 0
-             m01 0 m11 (cos x) m21 (sin x)
-             m02 0 m12 (- (sin x)) m22 (cos x))
+      (psetf m00 1.0 m10 0.0 m20 0.0
+             m01 0.0 m11 (cos x) m21 (sin x)
+             m02 0.0 m12 (- (sin x)) m22 (cos x))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)
-      (psetf m00 (cos y) m10 0 m20 (- (sin y))
-             m01 0 m11 1 m21 0
+      (psetf m00 (cos y) m10 0.0 m20 (- (sin y))
+             m01 0.0 m11 1.0 m21 0.0
              m02 (sin y) m12 0 m22 (cos y))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)))
@@ -175,7 +175,7 @@
   (with-matrix (m src)
     (macrolet ((stabilize (place tol)
                  `(when (< (abs ,place) ,tol)
-                    (setf ,place 0))))
+                    (setf ,place 0.0))))
       (stabilize m00 tolerance)
       (stabilize m01 tolerance)
       (stabilize m02 tolerance)

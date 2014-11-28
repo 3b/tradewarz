@@ -31,9 +31,9 @@
 
 (defun vector-clear (src)
   "Zero all components of a vector"
-  (setf (vx src) 0
-        (vy src) 0
-        (vz src) 0)
+  (setf (vx src) 0.0
+        (vy src) 0.0
+        (vz src) 0.0)
   src)
 
 (defun vector-modify (src &optional x y z)

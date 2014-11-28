@@ -32,6 +32,9 @@
    (dr :accessor dr
        :initarg :dr
        :initform (make-vector))
+   (drv :accessor drv
+        :initarg :drv
+        :initform (make-vector))
    (dtv :accessor dtv
         :initarg :dtv
         :initform (make-vector))
@@ -64,8 +67,9 @@
   
     (add-node *e1*)
     (setf (movingp *e1*) t)
+    (setf (rotatingp *e1*) t)
     (vector-modify (dv *e1*) 1 1 -1)
-    (vector-modify (dr *e1*) 1.5 0 0)
+    (vector-modify (dr *e1*) 0 0 0)
     )
 
 (defun current-scene ()
@@ -114,6 +118,8 @@
   (vector-clear (dr node))
   (when (movingp node)
     (matrix-translate (dtv node) (local-basis node)))
+  (when (rotatingp node)
+    (matrix-rotate (drv node) (local-basis node)))
   )
 
 (defun render-scene ()
