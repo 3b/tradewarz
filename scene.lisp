@@ -60,6 +60,14 @@
         do (load-models object asset)
            (apply #'load-map object world)))
 
+(defun load-models (scene asset)
+  (loop for (name data) in (read-data "assets" asset)
+        for model = (apply #'make-instance 'model :name name data)
+        do (setf (gethash name (models scene)) model)))
+
+(defun current-scene ()
+  (scene *game*))
+
 (defun load-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
   (generate-map)
@@ -74,14 +82,6 @@
   (vector-modify (dv *e2*) 1 1 -0.5)
   (vector-modify (dr *e1*) 1.5 0 0)
   (vector-modify (dr *e2*) 1.5 0 0))
-
-(defun current-scene ()
-  (scene *game*))
-
-(defun load-models (scene asset)
-  (loop for (name data) in (read-data "assets" asset)
-        for model = (apply #'make-instance 'model :name name data)
-        do (setf (gethash name (models scene)) model)))
 
 (defun make-node (model)
   (let ((node (make-instance 'scene-node :model model)))
@@ -103,7 +103,6 @@
           do (loop-scene func child level))))
 
 (defun update-scene ()
-  (setf (layers (current-scene)) (make-hash-table))
   (loop-scene #'update-node)
   (sort-layers))
 
@@ -143,7 +142,8 @@
   (loop with layers = (layers (current-scene))
         for layer in (hash-table-keys layers)
         do (loop for node-data in (gethash layer layers)
-                 do (render-node (car node-data)))))
+                 do (render-node (car node-data)))
+           (remhash layer layers)))
 
 (defun render-node (node)
   (let ((model (get-model (model node))))
