@@ -20,9 +20,16 @@
 (defun load-map (scene data)
   (setf (world-map scene) (apply #'make-instance 'world-map data)))
 
+(defun find-tile (tile-id)
+  (loop with models = (models (current-scene))
+        for tile being the hash-keys of models
+        for model = (gethash tile models)
+        do (when (= tile-id (tile model))
+             (return tile))))
+
 (defmethod draw-tile :around (shape x y layer)
-  (let* ((tile (aref (tiles (current-map)) y x))
-         (node (make-node tile))
+  (let* ((tile-id (aref (tiles (current-map)) y x))
+         (node (make-node (find-tile tile-id)))
          (offset (call-next-method shape x y layer)))
     (add-node node :parent layer)
     (vector-modify (dr node) 0 0 (/ pi 2))

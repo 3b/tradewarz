@@ -129,16 +129,15 @@
       (world-basis node))))
 
 (defun node-depth (node &optional level)
-  (let ((translation (matrix-get-translation-new (world-basis node))))
-    (push `(,node . ,(vy translation))
-          (gethash level (layers (current-scene))))))
+  (let ((depth (vy (matrix-get-translation-new (world-basis node)))))
+    (push (list node depth) (gethash level (layers (current-scene))))))
 
 (defun sort-layers ()
   (loop-scene #'node-depth)
   (loop with layers = (layers (current-scene))
         for layer being the hash-keys of layers
         for unsorted = (copy-seq (gethash layer layers))
-        do (setf (gethash layer layers) (sort unsorted #'< :key #'cdr))))
+        do (setf (gethash layer layers) (sort unsorted #'< :key #'cadr))))
 
 (defun render-scene ()
   (loop with layers = (layers (current-scene))

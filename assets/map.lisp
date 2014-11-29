@@ -15,5 +15,5 @@
  ;; a 6-sided map tile
  (:hex
    (:image "grass.png"
-    :tile t))
+    :tile 0))
 )
