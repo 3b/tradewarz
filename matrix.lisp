@@ -110,6 +110,18 @@
   "Add as translation vector to a matrix as a new matrix"
   (matrix-translate vec (matrix-copy-new dest)))
 
+(defun matrix-get-translation (vec src)
+  "Put the translation column of a matrix into the given vector"
+  (with-matrix (m src)
+    (psetf (vx vec) m03
+           (vy vec) m13
+           (vz vec) m23))
+  vec)
+
+(defun matrix-get-translation-new (src)
+  "Put the translation column of a matrix into a new vector"
+  (matrix-get-translation (make-vector) src))
+
 (defun matrix-apply (basis point dest)
   "Multiply a basis matrix by a point vector stored in the given destination"
   (with-matrix (m basis)

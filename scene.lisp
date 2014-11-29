@@ -6,6 +6,8 @@
    (root :reader root
          :initarg :root
          :initform (make-instance 'scene-node))
+   (layers :accessor layers
+           :initform (make-hash-table))
    (world-map :accessor world-map)
    (models :reader models
            :initform (make-hash-table))))
@@ -60,15 +62,14 @@
 
 (defun load-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
-  ;(generate-map)
+  (generate-map)
 
   ;; test entities
   (defparameter *e1* (make-node :alien-small))
-  (defparameter *e2* (make-node :alien-small2))
+  (defparameter *e2* (make-node :alien-small))
   (add-node *e1*)
   (add-node *e2*)
   (setf (movingp *e2*) t)
-  (setf (rotatingp *e2*) t)
   (vector-modify (dv *e1*) 1 1 -0.5)
   (vector-modify (dv *e2*) 1 1 -0.5)
   (vector-modify (dr *e1*) 1.5 0 0)
@@ -93,25 +94,22 @@
 (defun add-node (node &key parent)
   (add-child (or parent (root (current-scene))) node)) 
 
-(defun loop-scene (func &optional parent)
-  (let ((parent (or parent (root (current-scene)))))
-    (funcall func parent)
-    (loop for child being the hash-values of (children parent)
-          do (loop-scene func child))))
+(defun loop-scene (func &optional parent level)
+  (let ((parent (or parent (root (current-scene))))
+        (level (or level 0)))
+    (funcall func parent level)
+    (loop with level = (incf level)
+          for child being the hash-values of (children parent)
+          do (loop-scene func child level))))
 
 (defun update-scene ()
-  (loop-scene #'update-node))
+  (setf (layers (current-scene)) (make-hash-table))
+  (loop-scene #'update-node)
+  (sort-layers))
 
-(defun update-node (node)
+(defun update-node (node &optional level)
   (update-local-basis node)
   (update-world-basis node))
-
-(defun update-world-basis (node)
-  (if (parent node)
-    (matrix-multiply
-      (world-basis (parent node))
-      (local-basis node)
-      (world-basis node))))
 
 (defun update-local-basis (node)
   (matrix-translate (dv node) (local-basis node))
@@ -123,8 +121,30 @@
   (when (rotatingp node)
     (matrix-rotate (drv node) (local-basis node))))
 
+(defun update-world-basis (node)
+  (if (and (parent node) (model node))
+    (matrix-multiply
+      (world-basis (parent node))
+      (local-basis node)
+      (world-basis node))))
+
+(defun node-depth (node &optional level)
+  (let ((translation (matrix-get-translation-new (world-basis node))))
+    (push `(,node . ,(vy translation))
+          (gethash level (layers (current-scene))))))
+
+(defun sort-layers ()
+  (loop-scene #'node-depth)
+  (loop with layers = (layers (current-scene))
+        for layer being the hash-keys of layers
+        for unsorted = (copy-seq (gethash layer layers))
+        do (setf (gethash layer layers) (sort unsorted #'< :key #'cdr))))
+
 (defun render-scene ()
-  (loop-scene #'render-node))
+  (loop with layers = (layers (current-scene))
+        for layer in (hash-table-keys layers)
+        do (loop for node-data in (gethash layer layers)
+                 do (render-node (car node-data)))))
 
 (defun render-node (node)
   (let ((model (get-model (model node))))
