@@ -68,20 +68,23 @@
 (defun current-scene ()
   (scene *game*))
 
+
 (defun load-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
   (generate-map)
 
-  ;; test entities
   (defparameter *e1* (make-node :alien-small))
   (defparameter *e2* (make-node :alien-small))
+
+  ;; test entities
   (add-node *e1*)
   (add-node *e2*)
   (setf (movingp *e2*) t)
-  (vector-modify (dv *e1*) 1 1 -0.5)
-  (vector-modify (dv *e2*) 1 1 -0.5)
-  (vector-modify (dr *e1*) 1.5 0 0)
-  (vector-modify (dr *e2*) 1.5 0 0))
+  (vector-modify (dv *e1*) 0.5 0 -0.5)
+  (vector-modify (dv *e2*) 0.5 0 -0.5)
+  (vector-modify (dr *e1*) (/ pi 2) 0 0)
+  (vector-modify (dr *e2*) (/ pi 2) 0 0)
+  )
 
 (defun make-node (model)
   (let ((node (make-instance 'scene-node :model model)))

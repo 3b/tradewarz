@@ -37,17 +37,6 @@
 (defmethod draw-tile (shape x y &key)
   (list x y 0))
 
-(defmethod draw-tile ((shape (eql :hexagon)) x y &key)
-  (let* ((unit-offset (list 0.4330127 3/4 1))
-         (location (list x y 0))
-         (offset (mapcar #'* location unit-offset (list 1 2 1))))
-    (when (evenp x)
-      (incf (cadr offset) (cadr unit-offset)))
-    offset))
-
-(defmethod draw-tile :after ((shape (eql :hexagon)) x y &key node)
-  (vector-modify (dr node) 0 0 (/ pi 2)))
-
 (defun generate-map ()
   (let ((layer (make-instance 'scene-node))
         (shape (tile-shape (current-map))))
