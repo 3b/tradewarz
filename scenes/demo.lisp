@@ -1,4 +1,4 @@
-(:assets ("map" "alien")
+(:assets ("font" "map" "alien")
  :world ((:width 12
           :height 24
           :tile-size (64 64 64)

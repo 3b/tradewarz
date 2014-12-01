@@ -74,10 +74,10 @@
    Example: Hexagon 2,2 with direction -1,1 (northwest) would return the
    coordinates 1,1"
   (let* ((src (vector->list (hex->cube src)))
-         (directions '((1 -1 0) (1 0 -1) (0 1 -1)
+         (directions #((1 -1 0) (1 0 -1) (0 1 -1)
                        (-1 1 0) (-1 0 1) (0 -1 1)))
          (angle (atan (vy direction) (vx direction)))
          (index (mod (+ 6 (round (/ (* 6 angle) (* pi 2)))) 6))
-         (offset (elt directions index))
+         (offset (aref directions index))
          (dest (apply #'make-vector (mapcar #'+ src offset))))
     (cube->hex dest)))

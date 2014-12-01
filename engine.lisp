@@ -5,6 +5,8 @@
 (defclass game ()
   ((display :reader display
             :initform (make-instance 'display))
+   (debugp :accessor debugp
+           :initform nil)
    (textures :reader textures
              :initform (make-hash-table :test 'equal))
    (scene :accessor scene
@@ -13,6 +15,7 @@
 
 (defun make-game ()
   (setf *game* (make-instance 'game))
+  (setf (debugp *game*) t)
   (load-scene :name "demo"))
 
 (defun define-events ()

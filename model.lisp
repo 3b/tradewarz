@@ -9,6 +9,9 @@
    (tile :reader tile
          :initarg :tile
          :initform nil)
+   (primitive :reader primitive
+              :initarg :primitive
+              :initform :triangle-strip)
    (shape :reader shape
           :initarg :shape
           :initform :quad)
@@ -31,13 +34,6 @@
 
 (defun get-model (name)
   (gethash name (models (current-scene))))
-
-(defmethod primitive ((model model))
-  (if (or (not (eq (shape model) :quad))
-          (and (tile model)
-               (not (eq (tile-shape (current-map)) :quad))))
-    :triangle-fan
-    :triangle-strip))
 
 (defmethod vertices ((model model))
   (or (lines model)
