@@ -68,7 +68,6 @@
 (defun current-scene ()
   (scene *game*))
 
-
 (defun load-scene (&key name)
   (setf (scene *game*) (make-instance 'scene :name name))
   (generate-map)

@@ -68,34 +68,16 @@
       (t (setf (vz dest) (- (- (vx dest)) (vy dest)))))
     dest))
 
-(defun hex-direction (src)
-  "Convert a directional vector to a 3-D vector representing cube
-   coordinates"
-  (cond ((and (= (vx src) -1)
-              (= (vy src) 1))
-         (make-vector 0 1 -1))
-        ((and (= (vx src) 1)
-              (= (vy src) 1))
-         (make-vector 1 0 -1))
-        ((and (= (vx src) 1)
-              (= (vy src) 0))
-         (make-vector 1 -1 0))
-        ((and (= (vx src) 1)
-              (= (vy src) -1))
-         (make-vector 0 -1 1))
-        ((and (= (vx src) -1)
-              (= (vy src) -1))
-         (make-vector -1 0 1))
-        ((and (= (vx src) -1)
-              (= (vy src) 0))
-         (make-vector -1 1 0))))
-
 (defun hex-neighbor (src direction)
   "Calculate the coordinates of a hexagon's neighbor given a source hexagon
    coordinate and a 2-D directional vector.
    Example: Hexagon 2,2 with direction -1,1 (northwest) would return the
    coordinates 1,1"
   (let* ((src (vector->list (hex->cube src)))
-         (direction (vector->list (hex-direction direction)))
-         (dest (apply #'make-vector (mapcar #'+ src direction))))
+         (directions '((1 -1 0) (1 0 -1) (0 1 -1)
+                       (-1 1 0) (-1 0 1) (0 -1 1)))
+         (angle (atan (vy direction) (vx direction)))
+         (index (mod (+ 6 (round (/ (* 6 angle) (* pi 2)))) 6))
+         (offset (elt directions index))
+         (dest (apply #'make-vector (mapcar #'+ src offset))))
     (cube->hex dest)))
