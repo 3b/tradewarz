@@ -1,0 +1,20 @@
+Peter Keller (psilord) <psilord@cs.wisc.edu>
+For helping me understand how to use matrices and answering my countless
+questions. I seriously would not have given OpenGL a chance, or would have
+given up quickly if not for his passed down knowledge.
+Also for his beatiful code this game was inspired by located at:
+https://github.com/psilord/option-9
+
+Amit Patel (amitp) <amitp@cs.stanford.edu>
+For his extensive research related to hexagon grids, with in-depth explanations
+located at: http://www.redblobgames.com/grids/hexagons/
+Also for being kind enough to answer some questions I had via email regarding
+hexagon algorithms.
+
+(3b) <https://github.com/3b>
+For maintaining Common Lisp bindings to OpenGL, and answering many questions I
+had during early development.
+
+Also worth mentioning:
+The countless folks in #lispgames, #OpenGL, and #gamedev on Freenode IRC that
+helped me with miscellaneous problems and encouraged me along the way.
