@@ -4,9 +4,9 @@
   "Calculate the offset a hexagon is to be drawn at given its coordinates."
   (let* ((unit-offset (list 0.4330127 3/4 1))
          (location (list x y 0))
-         (offset (mapcar #'* location unit-offset (list 1 2 1))))
-    (when (oddp x)
-      (incf (cadr offset) (cadr unit-offset)))
+         (offset (mapcar #'* location unit-offset (list 2 1 1))))
+    (when (oddp y)
+      (incf (car offset) (car unit-offset)))
     offset))
 
 (defmethod draw-tile :after ((shape (eql :hexagon)) x y &key node)

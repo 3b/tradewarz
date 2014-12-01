@@ -39,18 +39,28 @@
   (list x y 0))
 
 (defun draw-tile-coords (x y layer offset)
+  ;; the ugliest function ever - must be rewritten
   (when (debugp *game*)
-    (let ((x-digits (concatenate 'list (format nil "~a" x))))
+    (let ((digits (concatenate 'list (format nil "~a,~a" x y))))
       (loop with digit-count = 0
-            for digit in x-digits
-            for model-name = (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD")
-            for model = (get-model model-name)
-            for node = (make-node model-name)
-            for spacing = (mapcar #'/ (tile-size (current-map)) (size model))
-            do (add-node node :parent layer)
-            (incf digit-count)
-            (apply #'vector-modify (dv node) (mapcar #'* offset spacing))
-            (vector-modify (dv node) (+ (vx (dv node)) digit-count) nil -1)))))
+            with v-space = 3
+            for digit in digits
+            do
+              (if (string= digit #\,)
+                (progn
+                  (setf digit-count 0)
+                  (if (eq v-space 3)
+                    (setf v-space 1)
+                    (setf v-space 3)))
+                (progn
+                  (let* ((model-name (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD"))
+                         (node (make-node model-name))
+                         (spacing (mapcar #'/ (tile-size (current-map)) (size (get-model model-name)))))
+                    (add-node node :parent layer)
+                    (incf digit-count)
+                    (apply #'vector-modify (dv node) (mapcar #'* offset spacing))
+                    (vector-modify (dr node) 0 pi pi) ; why do we have to flip 2 axes?
+                    (vector-modify (dv node) (+ (vx (dv node)) digit-count 1.5) (- (vy (dv node)) v-space) -1))))))))
 
 (defun generate-map ()
   (let ((layer (make-instance 'scene-node))
