@@ -12,12 +12,9 @@
    (primitive :reader primitive
               :initarg :primitive
               :initform :triangle-strip)
-   (shape :reader shape
-          :initarg :shape
-          :initform :quad)
    (size :reader size
          :initarg :size
-         :initform '(32 32 32))
+         :initform nil)
    (color :reader color
           :initarg :color
           :initform '(1 1 1))
@@ -35,16 +32,5 @@
 (defun get-model (name)
   (gethash name (models (current-scene))))
 
-(defmethod vertices ((model model))
-  (or (lines model)
-      (make-shape (get-shape model) (color model))))
-
 (defmethod get-size ((model model))
-  (if (tile model)
-    (tile-size (current-map))
-    (size model)))
-
-(defmethod get-shape ((model model))
-  (if (tile model)
-    (tile-shape (current-map))
-    (shape model)))
+  (or (size model) (tile-size (current-map))))

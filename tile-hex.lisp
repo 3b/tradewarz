@@ -9,11 +9,6 @@
       (incf (car offset) (car unit-offset)))
     offset))
 
-(defmethod draw-tile :after ((shape (eql :hexagon)) x y &key node)
-  "Rotate a hexagon 90 degrees immediately after it is drawn, in order to
-   have the flat edges on the left and right sides rather than top and bottom"
-  (vector-modify (dr node) 0 0 (/ pi 2)))
-
 (defun axial->cube (src)
   "Convert a 2-D vector representing axial coordinates to a 3-D vector
    representing cube coordinates"

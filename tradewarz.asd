@@ -17,7 +17,6 @@
                (:file "matrix")
                (:file "display")
                (:file "input")
-               (:file "shape")
                (:file "model")
                (:file "tile-hex")
                (:file "map")

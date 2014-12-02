@@ -18,6 +18,10 @@
   (setf (debugp *game*) t)
   (load-scene :name "demo"))
 
+(defun toggle-debugging ()
+  (setf (debugp *game*) (not (debugp *game*)))
+  (load-scene :name "demo"))
+
 (defun define-events ()
   (sdl:with-events ()
     (:quit-event () t)

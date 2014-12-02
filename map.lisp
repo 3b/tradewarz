@@ -43,24 +43,24 @@
   (when (debugp *game*)
     (let ((digits (concatenate 'list (format nil "~a,~a" x y))))
       (loop with digit-count = 0
-            with v-space = 3
+            with v-space = 1
             for digit in digits
             do
               (if (string= digit #\,)
                 (progn
                   (setf digit-count 0)
-                  (if (eq v-space 3)
-                    (setf v-space 1)
-                    (setf v-space 3)))
+                  (if (eq v-space 1)
+                    (setf v-space -1)
+                    (setf v-space 1)))
                 (progn
                   (let* ((model-name (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD"))
                          (node (make-node model-name))
                          (spacing (mapcar #'/ (tile-size (current-map)) (size (get-model model-name)))))
                     (add-node node :parent layer)
-                    (incf digit-count)
                     (apply #'vector-modify (dv node) (mapcar #'* offset spacing))
                     (vector-modify (dr node) 0 pi pi) ; why do we have to flip 2 axes?
-                    (vector-modify (dv node) (+ (vx (dv node)) digit-count 1.5) (- (vy (dv node)) v-space) -1))))))))
+                    (vector-modify (dv node) (+ (vx (dv node)) digit-count) (- (vy (dv node)) v-space))
+                    (incf digit-count))))))))
 
 (defun generate-map ()
   (let ((layer (make-instance 'scene-node))

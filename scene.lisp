@@ -73,12 +73,11 @@
   (generate-map)
 
   (defparameter *e1* (make-node :alien-small))
-  (defparameter *e2* (make-node :alien-small))
 
   ;; test entities
   (add-node *e1*)
   (setf (movingp *e1*) t)
-  (vector-modify (dv *e1*) 1/4 -1/4 -0.5)
+  (vector-modify (dv *e1*) 0.5 1 -1)
   (vector-modify (dr *e1*) (/ pi 2) 0 0))
 
 (defun make-node (model)
@@ -150,7 +149,7 @@
       (gl:with-primitive (primitive model)
         (loop with vertex = (make-vector)
               with size = (get-size model)
-              for (object texture color) in (vertices model)
+              for (object texture color) in (lines model)
               do (apply #'gl:color color)
                  (apply #'gl:tex-coord texture)
                  (apply #'vector-modify vertex object)
