@@ -58,7 +58,6 @@
                          (node (make-node model-name)))
                     (add-node node :parent layer)
                     (apply #'vector-modify (dv node) offset)
-                    (vector-modify (dr node) 0 pi pi) ; why do we have to flip 2 axes?
                     (vector-modify (dv node)
                                    (+ (vx (dv node)) digit-count)
                                    (- (vy (dv node)) v-space)

@@ -38,8 +38,6 @@
     (gl:bind-texture :texture-2d texture)
     (gl:tex-parameter :texture-2d :generate-mipmap t)
     (gl:tex-parameter :texture-2d :texture-max-anisotropy-ext 16)
-    (gl:tex-parameter :texture-2d :texture-wrap-s :clamp)
-    (gl:tex-parameter :texture-2d :texture-wrap-t :clamp)
     (gl:tex-parameter :texture-2d :texture-min-filter :linear-mipmap-linear)
     (gl:tex-image-2d :texture-2d 0 :rgba width height 0 :rgba :unsigned-byte
       (sdl-base::with-pixel (pixels (sdl:fp surface))
