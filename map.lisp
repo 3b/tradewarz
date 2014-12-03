@@ -30,7 +30,8 @@
 (defmethod draw-tile :around (shape x y &key layer)
   (let* ((tile-id (aref (tiles (current-map)) y x))
          (node (make-node (find-tile tile-id)))
-         (offset (call-next-method shape x y :node node)))
+         (size (tile-size (current-map)))
+         (offset (mapcar #'* size (call-next-method shape x y :node node))))
     (add-node node :parent layer)
     (apply #'vector-modify (dv node) offset)
     (draw-tile-coords x y layer offset)))
@@ -43,23 +44,25 @@
   (when (debugp *game*)
     (let ((digits (concatenate 'list (format nil "~a,~a" x y))))
       (loop with digit-count = 0
-            with v-space = 1
+            with v-space = 8
             for digit in digits
             do
               (if (string= digit #\,)
                 (progn
                   (setf digit-count 0)
-                  (if (eq v-space 1)
-                    (setf v-space -1)
-                    (setf v-space 1)))
+                  (if (eq v-space 8)
+                    (setf v-space -8)
+                    (setf v-space 8)))
                 (progn
                   (let* ((model-name (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD"))
-                         (node (make-node model-name))
-                         (spacing (mapcar #'/ (tile-size (current-map)) (size (get-model model-name)))))
+                         (node (make-node model-name)))
                     (add-node node :parent layer)
-                    (apply #'vector-modify (dv node) (mapcar #'* offset spacing))
+                    (apply #'vector-modify (dv node) offset)
                     (vector-modify (dr node) 0 pi pi) ; why do we have to flip 2 axes?
-                    (vector-modify (dv node) (+ (vx (dv node)) digit-count) (- (vy (dv node)) v-space))
+                    (vector-modify (dv node)
+                                   (+ (vx (dv node)) digit-count)
+                                   (- (vy (dv node)) v-space)
+                                   -1)
                     (incf digit-count))))))))
 
 (defun generate-map ()

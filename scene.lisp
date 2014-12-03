@@ -77,7 +77,7 @@
   ;; test entities
   (add-node *e1*)
   (setf (movingp *e1*) t)
-  (vector-modify (dv *e1*) 0.5 1 -1)
+  (vector-modify (dv *e1*) 0 0 -32)
   (vector-modify (dr *e1*) (/ pi 2) 0 0))
 
 (defun make-node (model)
@@ -148,11 +148,11 @@
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
         (loop with vertex = (make-vector)
-              with size = (get-size model)
+              with size = (apply #'make-vector (get-size model))
               for (object texture color) in (lines model)
               do (apply #'gl:color color)
                  (apply #'gl:tex-coord texture)
                  (apply #'vector-modify vertex object)
+                 (vector-multiply vertex size vertex)
                  (matrix-apply (world-basis node) vertex vertex)
-                 (apply #'gl:vertex
-                        (mapcar #'* (vector->list vertex) size)))))))
+                 (apply #'gl:vertex (vector->list vertex)))))))
