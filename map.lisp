@@ -1,11 +1,7 @@
 (in-package :tradewarz)
 
 (defclass world-map ()
-  ((width :reader width
-          :initarg :width)
-   (height :reader height
-           :initarg :height)
-   (tile-shape :reader tile-shape
+  ((tile-shape :reader tile-shape
                :initarg :tile-shape
                :initform :quad)
    (tile-size :reader tile-size
@@ -68,6 +64,7 @@
   (let ((layer (make-instance 'scene-node))
         (shape (tile-shape (current-map))))
     (add-node layer)
-    (loop for x below (width (current-map))
-          do (loop for y below (height (current-map))
-                   do (draw-tile shape x y :layer layer)))))
+    (loop with (h w) = (array-dimensions (tiles (current-map)))
+      for x below (or w 0)
+      do (loop for y below (or h 0)
+               do (draw-tile shape x y :layer layer)))))
