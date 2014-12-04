@@ -18,6 +18,7 @@
                (:file "matrix")
                (:file "display")
                (:file "input")
+               (:file "obj-file")
                (:file "model")
                (:file "tile-hex")
                (:file "map")
