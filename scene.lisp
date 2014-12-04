@@ -72,7 +72,7 @@
   (setf (scene *game*) (make-instance 'scene :name name))
   (generate-map)
 
-  (defparameter *e1* (make-node :alien-small))
+  (defparameter *e1* (make-node :player-box))
 
   ;; test entities
   (add-node *e1*)
@@ -104,6 +104,7 @@
   (sort-layers))
 
 (defun update-node (node &optional level)
+  (declare (ignore level))
   (update-local-basis node)
   (update-world-basis node))
 
