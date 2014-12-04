@@ -77,8 +77,7 @@
   ;; test entities
   (add-node *e1*)
   (setf (movingp *e1*) t)
-  (vector-modify (dv *e1*) 0 0 -32)
-  (vector-modify (dr *e1*) (/ pi 2) 0 0))
+  (vector-modify (dv *e1*) 0 0 -8))
 
 (defun make-node (model)
   (let ((node (make-instance 'scene-node :model model)))

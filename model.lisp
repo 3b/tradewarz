@@ -18,7 +18,7 @@
    (color :reader color
           :initarg :color
           :initform '(1 1 1))
-   (lines :reader lines
+   (lines :accessor lines
           :initarg :lines
           :initform nil)
    (texture-id :accessor texture-id

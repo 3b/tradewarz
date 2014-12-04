@@ -8,8 +8,9 @@
                lispbuilder-sdl-image
                cl-opengl
                cl-glu
+               bordeaux-threads
                alexandria
-               bordeaux-threads)
+               split-sequence)
   :serial t
   :components ((:file "packages")
                (:file "utils")
