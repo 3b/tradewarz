@@ -12,6 +12,9 @@
    (primitive :reader primitive
               :initarg :primitive
               :initform :triangle-strip)
+   (object :reader object
+           :initarg :object
+           :initform nil)
    (size :reader size
          :initarg :size
          :initform nil)

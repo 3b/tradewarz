@@ -63,7 +63,10 @@
 (defun load-models (scene asset)
   (loop for (name data) in (read-data "assets" asset)
         for model = (apply #'make-instance 'model :name name data)
-        do (setf (gethash name (models scene)) model)))
+        do
+        (setf (gethash name (models scene)) model)
+        (when (object model)
+          (setf (lines model) (load-obj (object model))))))
 
 (defun current-scene ()
   (scene *game*))
@@ -72,11 +75,12 @@
   (setf (scene *game*) (make-instance 'scene :name name))
   (generate-map)
 
-  (defparameter *e1* (make-node :player-box))
+  (defparameter *e1* (make-node :tank))
 
   ;; test entities
   (add-node *e1*)
   (setf (movingp *e1*) t)
+  (vector-modify (dr *e1*) (/ pi -2) (/ pi 2) pi)
   (vector-modify (dv *e1*) 0 0 -8))
 
 (defun make-node (model)
@@ -147,12 +151,17 @@
     (when model
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
-        (loop with vertex = (make-vector)
+        (loop with vertex-vector = (make-vector)
+              with normal-vector = (make-vector)
               with size = (apply #'make-vector (get-size model))
-              for (object texture color) in (lines model)
+              for (normal vertex texture color) in (lines model)
               do (apply #'gl:color color)
                  (apply #'gl:tex-coord texture)
-                 (apply #'vector-modify vertex object)
-                 (vector-multiply vertex size vertex)
-                 (matrix-apply (world-basis node) vertex vertex)
-                 (apply #'gl:vertex (vector->list vertex)))))))
+                 (apply #'vector-modify vertex-vector vertex)
+                 (vector-multiply vertex-vector size vertex-vector)
+                 (matrix-apply (world-basis node) vertex-vector vertex-vector)
+                 (when normal
+                   (apply #'vector-modify normal-vector normal)
+                   (matrix-apply (world-basis node) normal-vector normal-vector)
+                   (apply #'gl:normal (vector->list normal-vector)))
+                 (apply #'gl:vertex (vector->list vertex-vector)))))))
