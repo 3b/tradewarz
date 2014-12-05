@@ -57,7 +57,7 @@
                     (vector-modify (dv node)
                                    (+ (vx (dv node)) digit-count)
                                    (- (vy (dv node)) v-space)
-                                   -1)
+                                   1)
                     (incf digit-count))))))))
 
 (defun generate-map ()

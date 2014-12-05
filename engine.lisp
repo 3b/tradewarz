@@ -55,7 +55,7 @@
 
 (defun start-game ()
   (bt:make-thread
-    (make-game)
+    #'make-game
     :name "tradewarz"))
 
 (defun profile ()

@@ -78,10 +78,14 @@
   (defparameter *e1* (make-node :tank))
 
   ;; test entities
+  (let ((axes (make-node :axes)))
+    (add-node axes)
+    (vector-modify (dv axes) -32 -32 0))
+  
   (add-node *e1*)
   (setf (movingp *e1*) t)
-  (vector-modify (dr *e1*) (/ pi -2) (/ pi 2) pi)
-  (vector-modify (dv *e1*) 0 0 -8))
+  (vector-modify (dr *e1*) (/ pi 2) (/ pi 2) 0)
+  (vector-modify (dv *e1*) 0 0 8))
 
 (defun make-node (model)
   (let ((node (make-instance 'scene-node :model model)))
@@ -104,7 +108,7 @@
 
 (defun update-scene ()
   (loop-scene #'update-node)
-  (sort-layers))
+  (loop-scene #'render-node))
 
 (defun update-node (node &optional level)
   (declare (ignore level))
@@ -146,7 +150,7 @@
                  do (render-node (car node-data)))
            (remhash layer layers)))
 
-(defun render-node (node)
+(defun render-node (node &optional level)
   (let ((model (get-model (model node))))
     (when model
       (gl:bind-texture :texture-2d (texture-id model))
