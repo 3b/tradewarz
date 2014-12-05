@@ -1,6 +1,6 @@
 (
  (:hex
-   (:image "hex.png"
+   (:image nil
     :primitive :triangle-strip
     :tile 0
     :lines ((nil

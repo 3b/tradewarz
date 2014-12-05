@@ -10,7 +10,8 @@
                cl-glu
                bordeaux-threads
                alexandria
-               split-sequence)
+               split-sequence
+               sb-sprof)
   :serial t
   :components ((:file "packages")
                (:file "utils")

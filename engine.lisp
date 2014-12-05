@@ -14,9 +14,11 @@
           :initform nil)))
 
 (defun make-game ()
-  (setf *game* (make-instance 'game))
-  (setf (debugp *game*) t)
-  (load-scene :name "demo"))
+  (sdl:with-init ()
+    (setf *game* (make-instance 'game))
+    (setf (debugp *game*) t)
+    (load-scene :name "demo")
+    (define-events)))
 
 (defun toggle-debugging ()
   (setf (debugp *game*) (not (debugp *game*)))
@@ -53,8 +55,15 @@
 
 (defun start-game ()
   (bt:make-thread
-    #'(lambda ()
-        (sdl:with-init ()
-          (make-game)
-          (define-events)))
+    (make-game)
     :name "tradewarz"))
+
+(defun profile ()
+  (sb-sprof:with-profiling
+    (:max-samples 100000
+     :report :flat
+     :threads :all
+     :loop nil
+     :reset t
+     :show-progress nil)
+    (make-game)))
