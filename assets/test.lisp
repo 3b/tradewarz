@@ -1,5 +1,5 @@
 (
- (:alien-small
+ (:alien
    (:image "alien.png"
     :primitive :triangle-strip
     :size (32 32)
@@ -20,13 +20,7 @@
              (1 1)
              (1 1 1)))))
 
- (:tank
-   (:image nil
-    :primitive :triangles
-    :object "tank"
-    :size (16 16 16)))
-
- (:player-box
+ (:cube
    (:primitive :triangle-strip
     :size (16 16 16)
     :lines ((nil

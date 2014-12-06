@@ -1,4 +1,4 @@
-(:assets ("font" "map" "alien")
+(:assets ("font" "map" "units" "test")
  :world ((:tile-size (64 64)
           :tile-shape :hexagon
           :tiles #2a ((0 0 0 0 0 0 0 0 0 0 0 0)

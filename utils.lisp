@@ -28,8 +28,7 @@
                     (sdl:height image)
                     :bpp 32
                     :pixel-alpha t)))
-    (sdl:draw-surface-at-* image 0 0 :surface surface)
-    surface))
+    (sdl:blit-surface image surface)))
 
 (defun surface->texture (surface)
   (let ((texture (car (gl:gen-textures 1)))

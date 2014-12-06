@@ -36,7 +36,6 @@
   (list x y 0))
 
 (defun draw-tile-coords (x y layer offset)
-  ;; the ugliest function ever - must be rewritten
   (when (debugp *game*)
     (let ((digits (concatenate 'list (format nil "~a,~a" x y))))
       (loop with digit-count = 0
@@ -55,9 +54,9 @@
                     (add-node node :parent layer)
                     (apply #'vector-modify (dv node) offset)
                     (vector-modify (dv node)
-                                   (+ (vx (dv node)) digit-count)
+                                   (+ (vx (dv node)) (* digit-count 8))
                                    (- (vy (dv node)) v-space)
-                                   1)
+                                   0.1)
                     (incf digit-count))))))))
 
 (defun generate-map ()
