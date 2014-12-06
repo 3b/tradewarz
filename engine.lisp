@@ -17,6 +17,7 @@
   (sdl:with-init ()
     (setf *game* (make-instance 'game))
     (setf (debugp *game*) t)
+    (make-window (display *game*))
     (load-scene :name "demo")
     (define-events)))
 
