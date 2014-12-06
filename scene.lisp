@@ -83,8 +83,7 @@
     (add-node *e1*)
     (setf (movingp *e1*) t)
     (setf (rotatingp *e1*) t)
-    (vector-modify (dr *e1*) (/ pi 2) (/ pi 2) pi)
-    (vector-modify (drv *e1*) 0 0.01 0)
+    (vector-modify (drv *e1*) 0 0 0.01)
     (vector-modify (dv *e1*) 0 0 8)))
 
 (defun make-node (model)
