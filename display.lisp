@@ -3,10 +3,10 @@
 (defclass display ()
   ((width :reader width
           :initarg :width
-          :initform 1920)
+          :initform 800)
    (height :reader height
            :initarg :height
-           :initform 1080)
+           :initform 600)
    (title :reader title
           :initform "TradeWarz")
    (fps :reader fps
@@ -68,8 +68,7 @@
     :multisample
     :color-material
     :lighting
-    :light0
-    :normalize)
+    :light0)
   (gl:hint :perspective-correction-hint :nicest)
   (gl:color-material :front :ambient-and-diffuse)
   (gl:material :front :shininess 50)

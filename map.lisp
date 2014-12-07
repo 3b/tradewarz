@@ -27,7 +27,7 @@
   (let* ((tile-id (aref (tiles (current-map)) y x))
          (node (make-node (find-tile tile-id)))
          (size (tile-size (current-map)))
-         (offset (mapcar #'* size (call-next-method shape x y :node node))))
+         (offset (mapcar #'* size (call-next-method shape x (- y)))))
     (add-node node :parent layer)
     (apply #'vector-modify (dv node) offset)
     (draw-tile-coords x y layer offset)))
@@ -35,29 +35,23 @@
 (defmethod draw-tile (shape x y &key)
   (list x y 0))
 
-(defun draw-tile-coords (x y layer offset)
+(defun draw-tile-coords (y x layer offset)
   (when (debugp *game*)
-    (let ((digits (concatenate 'list (format nil "~a,~a" x y))))
-      (loop with digit-count = 0
-            with v-space = 8
-            for digit in digits
-            do
-              (if (string= digit #\,)
-                (progn
-                  (setf digit-count 0)
-                  (if (eq v-space 8)
-                    (setf v-space -8)
-                    (setf v-space 8)))
-                (progn
-                  (let* ((model-name (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD"))
-                         (node (make-node model-name)))
-                    (add-node node :parent layer)
-                    (apply #'vector-modify (dv node) offset)
-                    (vector-modify (dv node)
-                                   (+ (vx (dv node)) (* digit-count 8))
-                                   (- (vy (dv node)) v-space)
-                                   0.1)
-                    (incf digit-count))))))))
+    (loop with digits = (concatenate 'list (format nil "~a,~a" x y))
+          with digit-count = 0
+          with digit-size = 8
+          with digit-offset = (make-vector 0 digit-size 0.1)
+          for digit in digits
+          for model = (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD")
+          do (if (string= digit #\,)
+               (setf digit-count 0
+                     (vy digit-offset) (- (vy digit-offset)))
+               (let ((node (make-node model)))
+                 (setf (vx digit-offset) (* digit-count digit-size))
+                 (add-node node :parent layer)
+                 (apply #'vector-modify (dv node) offset)
+                 (vector-add (dv node) digit-offset (dv node))
+                 (incf digit-count))))))
 
 (defun generate-map ()
   (let ((layer (make-instance 'scene-node))
