@@ -214,28 +214,29 @@
 (defun convert-to-opengl (src dest)
   "Convert a matrix into a matrix suitable for OpenGL"
   (with-matrix (m src)
-    (psetf (aref dest 0) m00
-           (aref dest 1) m10
-           (aref dest 2) m20
-           (aref dest 3) m30
-           (aref dest 4) m01
-           (aref dest 5) m11
-           (aref dest 6) m21
-           (aref dest 7) m31
-           (aref dest 8) m02
-           (aref dest 9) m12
-           (aref dest 10) m22
-           (aref dest 11) m32
-           (aref dest 12) m03
-           (aref dest 13) m13
-           (aref dest 14) m23
-           (aref dest 15) m33)
+    (psetf (aref dest 0) (the double-float m00)
+           (aref dest 1) (the double-float m10)
+           (aref dest 2) (the double-float m20)
+           (aref dest 3) (the double-float m30)
+           (aref dest 4) (the double-float m01)
+           (aref dest 5) (the double-float m11)
+           (aref dest 6) (the double-float m21)
+           (aref dest 7) (the double-float m31)
+           (aref dest 8) (the double-float m02)
+           (aref dest 9) (the double-float m12)
+           (aref dest 10) (the double-float m22)
+           (aref dest 11) (the double-float m32)
+           (aref dest 12) (the double-float m03)
+           (aref dest 13) (the double-float m13)
+           (aref dest 14) (the double-float m23)
+           (aref dest 15) (the double-float m33))
     dest))
 
 (defun convert-to-opengl-new (src)
   "Convert a matrix to a new matrix suitable for OpenGL"
   (let ((dest (make-array 16
-                          :initial-element 0)))
+                          :element-type 'double-float
+                          :initial-element 0d0)))
     (convert-to-opengl src dest)
     dest))
 
