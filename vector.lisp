@@ -121,3 +121,5 @@
 (defun vector-normalize-new (vec)
   "Convert a vector into a unit vector as a new vector"
   (vector-normalize (vector-copy-new vec)))
+
+(defun vector-cross ())
