@@ -152,10 +152,10 @@
 (defun render-node (node &optional level)
   (let ((model (get-model (model node))))
     (when model
+      (gl:matrix-mode :modelview)
+      (gl:load-matrix (convert-to-opengl-new (world-basis node)))
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
-        (gl:matrix-mode :modelview)
-        (gl:load-matrix (convert-to-opengl-new (world-basis node)))
         (loop with vertex-vector = (make-vector)
               with normal-vector = (make-vector)
               with size = (apply #'make-vector (get-size model))

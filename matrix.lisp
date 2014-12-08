@@ -235,7 +235,6 @@
 (defun convert-to-opengl-new (src)
   "Convert a matrix to a new matrix suitable for OpenGL"
   (let ((dest (make-array 16
-                          :element-type 'double-float
                           :initial-element 0)))
     (convert-to-opengl src dest)
     dest))
