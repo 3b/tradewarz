@@ -153,6 +153,7 @@
   (let ((model (get-model (model node))))
     (when model
       (gl:matrix-mode :modelview)
+      (gl:push-matrix)
       (gl:load-matrix (convert-to-opengl-new (world-basis node)))
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
@@ -167,4 +168,5 @@
                  (when normal
                    (apply #'vector-modify normal-vector normal)
                    (apply #'gl:normal (vector->list normal-vector)))
-                 (apply #'gl:vertex (vector->list vertex-vector)))))))
+                 (apply #'gl:vertex (vector->list vertex-vector))))
+      (gl:pop-matrix))))
