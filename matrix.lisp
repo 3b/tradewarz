@@ -7,10 +7,10 @@
                                                   m30 m31 m32 m33))
              (:conc-name nil)
              (:print-function print-matrix))
-  (m00 0.0) (m01 0.0) (m02 0.0) (m03 0.0)
-  (m10 0.0) (m11 0.0) (m12 0.0) (m13 0.0)
-  (m20 0.0) (m21 0.0) (m22 0.0) (m23 0.0)
-  (m30 0.0) (m31 0.0) (m32 0.0) (m33 0.0))
+  (m00 0.0d0) (m01 0.0d0) (m02 0.0d0) (m03 0.0d0)
+  (m10 0.0d0) (m11 0.0d0) (m12 0.0d0) (m13 0.0d0)
+  (m20 0.0d0) (m21 0.0d0) (m22 0.0d0) (m23 0.0d0)
+  (m30 0.0d0) (m31 0.0d0) (m32 0.0d0) (m33 0.0d0))
 
 
 (defmacro with-matrix ((prefix matrix) &body body)
@@ -63,10 +63,10 @@
 (defun matrix-identity (src)
   "Set a matrix to the identity matrix"
   (with-matrix (m src)
-    (psetf m00 1.0 m01 0.0 m02 0.0 m03 0.0
-           m10 0.0 m11 1.0 m12 0.0 m13 0.0
-           m20 0.0 m21 0.0 m22 1.0 m23 0.0
-           m30 0.0 m31 0.0 m32 0.0 m33 1.0))
+    (psetf m00 1.0d0 m01 0.0d0 m02 0.0d0 m03 0.0d0
+           m10 0.0d0 m11 1.0d0 m12 0.0d0 m13 0.0d0
+           m20 0.0d0 m21 0.0d0 m22 1.0d0 m23 0.0d0
+           m30 0.0d0 m31 0.0d0 m32 0.0d0 m33 1.0d0))
   src)
 
 (defun matrix-identity-new ()
@@ -128,15 +128,15 @@
     (psetf (vx dest) (+ (* m00 (vx point))
                         (* m01 (vy point))
                         (* m02 (vz point))
-                        (* m03 1.0))
+                        (* m03 1.0d0))
            (vy dest) (+ (* m10 (vx point))
                         (* m11 (vy point))
                         (* m12 (vz point))
-                        (* m13 1.0))
+                        (* m13 1.0d0))
            (vz dest) (+ (* m20 (vx point))
                         (* m21 (vy point))
                         (* m22 (vz point))
-                        (* m23 1.0))))
+                        (* m23 1.0d0))))
   dest)
 
 (defun matrix-apply-new (basis point)
@@ -167,14 +167,14 @@
       (psetf m00 (cos z) m10 (sin z) m01 (- (sin z)) m11 (cos z))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)
-      (psetf m00 1.0 m10 0.0 m20 0.0
-             m01 0.0 m11 (cos x) m21 (sin x)
-             m02 0.0 m12 (- (sin x)) m22 (cos x))
+      (psetf m00 1.0d0 m10 0.0d0 m20 0.0d0
+             m01 0.0d0 m11 (cos x) m21 (sin x)
+             m02 0.0d0 m12 (- (sin x)) m22 (cos x))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)
-      (psetf m00 (cos y) m10 0.0 m20 (- (sin y))
-             m01 0.0 m11 1.0 m21 0.0
-             m02 (sin y) m12 0 m22 (cos y))
+      (psetf m00 (cos y) m10 0.0d0 m20 (- (sin y))
+             m01 0.0d0 m11 1.0d0 m21 0.0d0
+             m02 (sin y) m12 0.0d0 m22 (cos y))
       (matrix-multiply src rotation dest)
       (matrix-copy-rotation dest src)))
   (matrix-stabilize src 1d-9))
@@ -188,7 +188,7 @@
   (with-matrix (m src)
     (macrolet ((stabilize (place tol)
                  `(when (< (abs ,place) ,tol)
-                    (setf ,place 0.0))))
+                    (setf ,place 0.0d0))))
       (stabilize m00 tolerance)
       (stabilize m01 tolerance)
       (stabilize m02 tolerance)
@@ -214,29 +214,29 @@
 (defun convert-to-opengl (src dest)
   "Convert a matrix into a matrix suitable for OpenGL"
   (with-matrix (m src)
-    (psetf (aref dest 0) (the double-float m00)
-           (aref dest 1) (the double-float m10)
-           (aref dest 2) (the double-float m20)
-           (aref dest 3) (the double-float m30)
-           (aref dest 4) (the double-float m01)
-           (aref dest 5) (the double-float m11)
-           (aref dest 6) (the double-float m21)
-           (aref dest 7) (the double-float m31)
-           (aref dest 8) (the double-float m02)
-           (aref dest 9) (the double-float m12)
-           (aref dest 10) (the double-float m22)
-           (aref dest 11) (the double-float m32)
-           (aref dest 12) (the double-float m03)
-           (aref dest 13) (the double-float m13)
-           (aref dest 14) (the double-float m23)
-           (aref dest 15) (the double-float m33))
+    (psetf (aref dest 0) (coerce m00 'double-float)
+           (aref dest 1) (coerce m10 'double-float)
+           (aref dest 2) (coerce m20 'double-float)
+           (aref dest 3) (coerce m30 'double-float)
+           (aref dest 4) (coerce m01 'double-float)
+           (aref dest 5) (coerce m11 'double-float)
+           (aref dest 6) (coerce m21 'double-float)
+           (aref dest 7) (coerce m31 'double-float)
+           (aref dest 8) (coerce m02 'double-float)
+           (aref dest 9) (coerce m12 'double-float)
+           (aref dest 10) (coerce m22 'double-float)
+           (aref dest 11) (coerce m32 'double-float)
+           (aref dest 12) (coerce m03 'double-float)
+           (aref dest 13) (coerce m13 'double-float)
+           (aref dest 14) (coerce m23 'double-float)
+           (aref dest 15) (coerce m33 'double-float))
     dest))
 
 (defun convert-to-opengl-new (src)
   "Convert a matrix to a new matrix suitable for OpenGL"
   (let ((dest (make-array 16
                           :element-type 'double-float
-                          :initial-element 0d0)))
+                          :initial-element 0.0d0)))
     (convert-to-opengl src dest)
     dest))
 

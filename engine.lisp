@@ -49,7 +49,6 @@
 
 (defun main-loop ()
   (gl:clear :color-buffer-bit :depth-buffer-bit)
-  (step-frame)
   (update-scene)
   (gl:flush)
   (sdl:update-display))
