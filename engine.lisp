@@ -49,15 +49,13 @@
 
 (defun main-loop ()
   (gl:clear :color-buffer-bit :depth-buffer-bit)
+  (step-frame)
   (update-scene)
-  (render-scene)
   (gl:flush)
   (sdl:update-display))
 
 (defun start-game ()
-  (bt:make-thread
-    #'make-game
-    :name "tradewarz"))
+  (bt:make-thread #'make-game :name "tradewarz"))
 
 (defun profile ()
   (sb-sprof:with-profiling
@@ -68,3 +66,10 @@
      :reset t
      :show-progress nil)
     (make-game)))
+
+(defun profile-2 ()
+  (sb-profile:reset)
+  (sb-profile:unprofile)
+  (sb-profile:profile "TRADEWARZ")
+  (make-game)
+  (sb-profile:report))

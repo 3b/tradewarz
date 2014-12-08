@@ -44,8 +44,7 @@
       (funcall coord-type obj))))
 
 (defmethod set-faces ((obj obj-file) data)
-  (loop with color = '(1 0 0)
-        for face in data
+  (loop for face in data
         for (vi ti ni) = (mapcar #'read-from-string (split-sequence #\/ face))
         for vertex = (aref (vertices obj) vi)
         for texture = (aref (textures obj) ti)
@@ -54,5 +53,5 @@
                    (vector->list normal)
                    (vector->list vertex)
                    (vector->list texture)
-                   color)
+                   '(1 1 1))
                  (faces obj))))

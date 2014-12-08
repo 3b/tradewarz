@@ -1,6 +1,6 @@
 (in-package :tradewarz)
 
-(defclass scene ()
+(defclass scene (frame)
   ((name :reader name
          :initarg :name)
    (root :reader root
@@ -105,7 +105,7 @@
           for child being the hash-values of (children parent)
           do (loop-scene func child level))))
 
-(defun update-scene ()
+(defun update-scene (&optional dt)
   (loop-scene #'update-node)
   (loop-scene #'render-node))
 
@@ -154,6 +154,8 @@
     (when model
       (gl:bind-texture :texture-2d (texture-id model))
       (gl:with-primitive (primitive model)
+        (gl:matrix-mode :modelview)
+        (gl:load-matrix (convert-to-opengl-new (world-basis node)))
         (loop with vertex-vector = (make-vector)
               with normal-vector = (make-vector)
               with size = (apply #'make-vector (get-size model))
@@ -162,7 +164,6 @@
                  (apply #'gl:tex-coord texture)
                  (apply #'vector-modify vertex-vector vertex)
                  (vector-multiply vertex-vector size vertex-vector)
-                 (matrix-apply (world-basis node) vertex-vector vertex-vector)
                  (when normal
                    (apply #'vector-modify normal-vector normal)
                    (apply #'gl:normal (vector->list normal-vector)))

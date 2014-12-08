@@ -210,3 +210,57 @@
 (defun matrix-stabilize-new (src tolerance)
   "Force each matrix element to 0 if below the tolerance level as a new matrix"
   (matrix-stabilize (matrix-copy-new src) tolerance))
+
+(defun convert-to-opengl (src dest)
+  "Convert a matrix into a matrix suitable for OpenGL"
+  (with-matrix (m src)
+    (psetf (aref dest 0) m00
+           (aref dest 1) m10
+           (aref dest 2) m20
+           (aref dest 3) m30
+           (aref dest 4) m01
+           (aref dest 5) m11
+           (aref dest 6) m21
+           (aref dest 7) m31
+           (aref dest 8) m02
+           (aref dest 9) m12
+           (aref dest 10) m22
+           (aref dest 11) m32
+           (aref dest 12) m03
+           (aref dest 13) m13
+           (aref dest 14) m23
+           (aref dest 15) m33)
+    dest))
+
+(defun convert-to-opengl-new (src)
+  "Convert a matrix to a new matrix suitable for OpenGL"
+  (let ((dest (make-array 16
+                          :element-type 'double-float
+                          :initial-element 0)))
+    (convert-to-opengl src dest)
+    dest))
+
+(defun convert-from-opengl (src dest)
+  "Convert a matrix in OpenGL format"
+  (with-matrix (m dest)
+    (psetf m00 (aref src 0)
+           m10 (aref src 1)
+           m20 (aref src 2)
+           m30 (aref src 3)
+           m01 (aref src 4)
+           m11 (aref src 5)
+           m21 (aref src 6)
+           m31 (aref src 7)
+           m02 (aref src 8)
+           m12 (aref src 9)
+           m22 (aref src 10)
+           m32 (aref src 11)
+           m03 (aref src 12)
+           m13 (aref src 13)
+           m23 (aref src 14)
+           m33 (aref src 15))
+    dest))
+
+(defun convert-from-opengl-new (src)
+  "Convert a matrix in OpenGL format to a new matrix"
+  (convert-from-opengl src (make-matrix)))
