@@ -28,6 +28,9 @@
    (world-basis :accessor world-basis
                 :initarg :world-basis
                 :initform (matrix-identity-new))
+   (dirtyp :accessor dirtyp
+           :initarg dirtyp
+           :initform t)
    (dv :accessor dv
        :initarg :dv
        :initform (make-vector))
@@ -63,10 +66,9 @@
 (defun load-models (scene asset)
   (loop for (name data) in (read-data "assets" asset)
         for model = (apply #'make-instance 'model :name name data)
-        do
-        (setf (gethash name (models scene)) model)
-        (when (object model)
-          (setf (lines model) (load-obj (object model))))))
+        do (setf (gethash name (models scene)) model)
+           (when (object model)
+             (setf (lines model) (load-obj (object model))))))
 
 (defun current-scene ()
   (scene *game*))
@@ -111,8 +113,12 @@
 
 (defun update-node (node &optional level)
   (declare (ignore level))
-  (update-local-basis node)
-  (update-world-basis node))
+  (when (or (dirtyp node)
+             (rotatingp node)
+             (movingp node))
+    (update-local-basis node)
+    (update-world-basis node)
+    (setf (dirtyp node) nil)))
 
 (defun update-local-basis (node)
   (matrix-translate (dv node) (local-basis node))
@@ -166,5 +172,9 @@
                    (vector-multiply vertex-vector size vertex-vector)
                    (when normal
                      (apply #'vector-modify normal-vector normal)
-                     (apply #'gl:normal (vector->list normal-vector)))
-                   (apply #'gl:vertex (vector->list vertex-vector))))))))
+                     (gl:normal (vx normal-vector)
+                                (vy normal-vector)
+                                (vz normal-vector)))
+                   (gl:vertex (vx vertex-vector)
+                              (vy vertex-vector)
+                              (vz vertex-vector))))))))

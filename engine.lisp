@@ -68,8 +68,8 @@
     (make-game)))
 
 (defun profile-2 ()
-  (sb-profile:reset)
   (sb-profile:unprofile)
+  (sb-profile:reset)
   (sb-profile:profile "TRADEWARZ")
   (make-game)
   (sb-profile:report))
