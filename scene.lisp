@@ -79,14 +79,22 @@
 
   ;; test entities
   (defparameter *e1* (make-node :tank))
-  (let ((axes (make-node :axes)))
+  (let ((axes (make-node :axes))
+        (tank (make-node :tank))
+        (jet (make-node :jet)))
+
     (add-node axes)
     (vector-modify (dv axes) -32 -32 0)
-    (add-node *e1*)
-    (setf (movingp *e1*) t)
-    (setf (rotatingp *e1*) t)
-    (vector-modify (drv *e1*) 0 0 0.01)
-    (vector-modify (dv *e1*) 0 0 8)))
+
+    (add-node tank)
+    (setf (rotatingp tank) t)
+    (vector-modify (drv tank) 0 0 0.01)
+    (vector-modify (dv tank) 0 0 8)
+
+    (add-node jet)
+    (setf (rotatingp jet) t)
+    (vector-modify (drv jet) 0 0 0.01)
+    (vector-modify (dv jet) 56 0 32)))
 
 (defun make-node (model)
   (let ((node (make-instance 'scene-node :model model)))

@@ -3,10 +3,10 @@
 (defclass display ()
   ((width :reader width
           :initarg :width
-          :initform 800)
+          :initform 1920)
    (height :reader height
            :initarg :height
-           :initform 600)
+           :initform 1080)
    (title :reader title
           :initform "TradeWarz")
    (fps :reader fps
