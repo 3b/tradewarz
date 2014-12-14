@@ -107,20 +107,17 @@
 (defun add-node (node &key parent)
   (add-child (or parent (root (current-scene))) node)) 
 
-(defun loop-scene (func &optional parent level)
-  (let ((parent (or parent (root (current-scene))))
-        (level (or level 0)))
-    (funcall func parent level)
-    (loop with level = (incf level)
-          for child being the hash-values of (children parent)
-          do (loop-scene func child level))))
+(defun loop-scene (func &optional parent)
+  (let ((parent (or parent (root (current-scene)))))
+    (funcall func parent)
+    (loop for child being the hash-values of (children parent)
+          do (loop-scene func child))))
 
 (defun update-scene (&optional dt)
   (loop-scene #'update-node)
   (loop-scene #'render-node))
 
-(defun update-node (node &optional level)
-  (declare (ignore level))
+(defun update-node (node)
   (when (or (dirtyp node)
              (rotatingp node)
              (movingp node))
@@ -145,17 +142,6 @@
       (local-basis node)
       (world-basis node))))
 
-(defun node-depth (node &optional level)
-  (let ((depth (vy (matrix-get-translation-new (world-basis node)))))
-    (push (list node depth) (gethash level (layers (current-scene))))))
-
-(defun sort-layers ()
-  (loop-scene #'node-depth)
-  (loop with layers = (layers (current-scene))
-        for layer being the hash-keys of layers
-        for unsorted = (copy-seq (gethash layer layers))
-        do (setf (gethash layer layers) (sort unsorted #'< :key #'cadr))))
-
 (defun render-scene ()
   (loop with layers = (layers (current-scene))
         for layer in (hash-table-keys layers)
@@ -163,7 +149,7 @@
                  do (render-node (car node-data)))
            (remhash layer layers)))
 
-(defun render-node (node &optional level)
+(defun render-node (node)
   (let ((model (get-model (model node))))
     (when model
       (gl:with-pushed-matrix
