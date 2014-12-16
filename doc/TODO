@@ -1,6 +1,3 @@
 TODO
 
-* Fix scene layers: Should only group objects with transparency; Should not
-  create/sort list each frame.
-
 * Add recursive assets: Assets should be able to obtain data from parent assets.

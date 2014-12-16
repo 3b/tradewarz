@@ -1,6 +1,6 @@
 (in-package :tradewarz)
 
-(defmethod draw-tile ((shape (eql :hexagon)) x y &key)
+(defmethod draw-tile ((shape (eql :hexagon)) x y)
   "Calculate the offset a hexagon is to be drawn at given its coordinates."
   (let* ((unit-offset (list 0.4330127 3/4 1))
          (location (list x y 0))

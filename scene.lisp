@@ -6,8 +6,6 @@
    (root :reader root
          :initarg :root
          :initform (make-instance 'scene-node))
-   (layers :accessor layers
-           :initform (make-hash-table))
    (world-map :accessor world-map)
    (models :reader models
            :initform (make-hash-table))))
@@ -141,13 +139,6 @@
       (world-basis (parent node))
       (local-basis node)
       (world-basis node))))
-
-(defun render-scene ()
-  (loop with layers = (layers (current-scene))
-        for layer in (hash-table-keys layers)
-        do (loop for node-data in (gethash layer layers)
-                 do (render-node (car node-data)))
-           (remhash layer layers)))
 
 (defun render-node (node)
   (let ((model (get-model (model node))))
