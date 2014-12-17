@@ -50,8 +50,7 @@
 
 (defmethod configure ((display display) (api (eql 'sdl)))
   "Configure SDL settings"
-  (setf (sdl:frame-rate) (fps display))
-  (sdl:show-cursor nil))
+  (setf (sdl:frame-rate) (fps display)))
 
 (defmethod configure ((display display) (api (eql 'opengl)))
   "Configure OpenGL settings"

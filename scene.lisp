@@ -111,7 +111,7 @@
     (loop for child being the hash-values of (children parent)
           do (loop-scene func child))))
 
-(defun update-scene (&optional dt)
+(defun update-scene ()
   (loop-scene #'update-node)
   (loop-scene #'render-node))
 

@@ -21,9 +21,31 @@
 (defun mouse-down (button state x y)
   (declare (ignore state))
   (when (eq button 3)
-    (format t "Right clicked at ~a,~a~%" x y)))
+    (when (debugp *game*)
+      (make-picking-ray x y))
+    (format t "Right clicked at ~a~%" (convert-mouse-coords x y))))
 
 (defun mouse-up (button state x y)
   (declare (ignore state))
   (when (eq button 3)
-    (format t "Right unclicked at ~a,~a~%" x y)))
+    (format t "Right unclicked at ~a~%" (convert-mouse-coords x y))))
+
+(defun make-picking-ray (x y)
+  (let ((model (get-model :picking-ray))
+        (near (unproject-vector x y 0))
+        (far (unproject-vector x y 1)))
+    (setf (lines model) `((nil ,(vector->list near) (1 1) (1 0 0))
+                          (nil ,(vector->list far) (1 1) (1 0 0))))
+    (add-node (make-node :picking-ray))))
+
+(defun unproject-vector (x y z)
+  (let ((coords (convert-mouse-coords x y)))
+    (multiple-value-bind (x y z)
+      (glu:un-project (vx coords) (vy coords) z)
+      (make-vector x y z))))
+
+(defun convert-mouse-coords (x y)
+  "Convert SDL mouse coordinates to OpenGL coordinates with origin at the
+   bottom left"
+  (let* ((y (- (height (display *game*)) y)))
+    (make-vector x y)))

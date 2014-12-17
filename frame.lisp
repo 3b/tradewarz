@@ -11,26 +11,21 @@
           :initform 0)
    (frames :accessor frames
            :initform 0)
-   (fps-interval :reader fps-interval
-                 :initform 5.0)))
+   (interval :reader interval
+             :initform 5.0)))
 
 (defun running-time ()
   (sdl:sdl-get-ticks))
 
-(defun step-frame ()
-  (with-accessors ((start start)
-                   (now now)
-                   (before before)
-                   (delta delta)
-                   (frames frames)
-                   (fps-interval fps-interval))
-                  (current-scene)
+(defmethod step-frame ((frame frame))
+  (with-slots (start now before delta frames interval) frame
+    (incf frames)
     (setf now (running-time)
           delta (- now before)
           before now)
-    (incf frames)
-    (when (and (debugp *game*)
-               (> (- now start) (* fps-interval 1000)))
-      (print (/ frames fps-interval))
-      (setf start (running-time)
-            frames 0))))
+    (let ((seconds (/ (- now start) 1000)))
+      (when (and (debugp *game*)
+                 (> seconds interval))
+        (format t "FPS: ~,2f~%" (/ frames seconds))
+        (setf frames 0
+              start (running-time))))))
