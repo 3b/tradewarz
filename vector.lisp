@@ -11,9 +11,8 @@
 (defun print-vector (struct stream depth)
   (declare (ignore depth))
   (print-unreadable-object (struct stream)
-    (format stream "~a ~a ~a" (vx struct) (vy struct) (vz struct))
-    )
-  )
+    (format stream "~a ~a ~a" (vx struct) (vy struct) (vz struct))))
+
 (defun vector-copy (src dest)
   "Copy a vector's components to another vector"
   (psetf (vx dest) (vx src)
@@ -24,23 +23,23 @@
 (defun vector-copy-new (src)
   "Copy a vector's components to a new vector"
   (let ((dest (make-vector)))
-    (setf (vx dest) (vx src)
-          (vy dest) (vy src)
-          (vz dest) (vz src))
+    (psetf (vx dest) (vx src)
+           (vy dest) (vy src)
+           (vz dest) (vz src))
     dest))
 
 (defun vector-clear (src)
   "Zero all components of a vector"
-  (setf (vx src) 0.0
-        (vy src) 0.0
-        (vz src) 0.0)
+  (psetf (vx src) 0.0
+         (vy src) 0.0
+         (vz src) 0.0)
   src)
 
 (defun vector-modify (src &optional x y z)
   "Assign new components to a vector"
-  (setf (vx src) (or x (vx src))
-        (vy src) (or y (vy src))
-        (vz src) (or z (vz src)))
+  (psetf (vx src) (or x (vx src))
+         (vy src) (or y (vy src))
+         (vz src) (or z (vz src)))
   src)
 
 (defun vector->list (src)
@@ -51,9 +50,9 @@
 
 (defun vector-negate (src)
   "Negate a vector's components"
-  (setf (vx src) (- (vx src))
-        (vy src) (- (vy src))
-        (vz src) (- (vz src)))
+  (psetf (vx src) (- (vx src))
+         (vy src) (- (vy src))
+         (vz src) (- (vz src)))
   src)
 
 (defun vector-negate-new (src)
@@ -95,9 +94,9 @@
 
 (defun vector-scale (src scalar)
   "Scale the length of a vector"
-  (setf (vx src) (* (vx src) scalar)
-        (vy src) (* (vy src) scalar)
-        (vz src) (* (vz src) scalar))
+  (psetf (vx src) (* (vx src) scalar)
+         (vy src) (* (vy src) scalar)
+         (vz src) (* (vz src) scalar))
   src)
 
 (defun vector-scale-new (src scalar)
@@ -113,13 +112,31 @@
 (defun vector-normalize (src)
   "Convert a vector to a unit vector"
   (let ((magnitude (vector-length src)))
-    (setf (vx src) (/ (vx src) magnitude)
-          (vy src) (/ (vy src) magnitude)
-          (vz src) (/ (vz src) magnitude))
+    (psetf (vx src) (/ (vx src) magnitude)
+           (vy src) (/ (vy src) magnitude)
+           (vz src) (/ (vz src) magnitude))
     src))
 
 (defun vector-normalize-new (vec)
   "Convert a vector into a unit vector as a new vector"
   (vector-normalize (vector-copy-new vec)))
 
-(defun vector-cross ())
+(defun vector-cross (src1 src2 dest)
+  "Compute the cross product of two vectors to an existing vector"
+  (psetf (vx dest) (- (* (vy src1) (vz src2))
+                      (* (vy src2) (vz src1)))
+         (vy dest) (- (- (* (vx src1) (vz src2))
+                         (* (vx src2) (vz src1))))
+         (vz dest) (- (* (vx src1) (vy src2))
+                      (* (vx src2) (vy src1))))
+  dest)
+
+(defun vector-cross-new (src1 src2)
+  "Compute the cross product of two vectors to a new vector"
+  (vector-cross src1 src2 (make-vector)))
+
+(defun vector-dot (src1 src2)
+  "Compute the dot product of two vectors"
+  (+ (* (vx src1) (vx src2))
+     (* (vy src1) (vy src2))
+     (* (vz src1) (vz src2))))
