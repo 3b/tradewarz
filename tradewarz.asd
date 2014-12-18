@@ -23,5 +23,6 @@
                (:file "tile-hex")
                (:file "map")
                (:file "frame")
+               (:file "node")
                (:file "scene")
                (:file "engine")))

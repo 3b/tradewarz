@@ -39,7 +39,8 @@
   (gethash name (models (current-scene))))
 
 (defmethod get-size ((model model))
-  (or (size model) (tile-size (current-map))))
+  (apply #'make-vector (or (size model)
+                           (tile-size (current-map)))))
 
 (defun load-models (scene asset)
   (loop for (name data) in (read-data "assets" asset)
