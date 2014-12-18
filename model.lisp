@@ -56,4 +56,5 @@
         for vertex = (apply #'make-vector v)
         for distance = (vector-distance origin vertex)
         do (when (> distance farthest)
-             (setf (radial-extent model) vertex))))
+             (setf (radial-extent model) vertex
+                   farthest distance))))
