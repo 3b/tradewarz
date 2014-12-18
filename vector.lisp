@@ -140,3 +140,12 @@
   (+ (* (vx src1) (vx src2))
      (* (vy src1) (vy src2))
      (* (vz src1) (vz src2))))
+
+(defun vector-distance (src1 src2)
+  "Compute the Euclidean distance between two vectors"
+  (let ((x (- (vx src2) (vx src1)))
+        (y (- (vy src2) (vy src1)))
+        (z (- (vz src2) (vz src1))))
+    (sqrt (+ (* x x)
+             (* y y)
+             (* z z)))))

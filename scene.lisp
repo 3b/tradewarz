@@ -61,13 +61,6 @@
         do (load-models object asset)
            (apply #'load-map object world)))
 
-(defun load-models (scene asset)
-  (loop for (name data) in (read-data "assets" asset)
-        for model = (apply #'make-instance 'model :name name data)
-        do (setf (gethash name (models scene)) model)
-           (when (object model)
-             (setf (geometry model) (load-obj (object model))))))
-
 (defun current-scene ()
   (scene *game*))
 
@@ -82,7 +75,7 @@
         (jet (make-node :jet)))
 
     (add-node axes)
-    (vector-modify (dv axes) -32 -32 0)
+    (vector-modify (dv axes) -64 32 0)
 
     (add-node tank)
     (setf (rotatingp tank) t)
