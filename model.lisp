@@ -21,8 +21,8 @@
    (color :reader color
           :initarg :color
           :initform '(1 1 1))
-   (lines :accessor lines
-          :initarg :lines
+   (geometry :accessor geometry
+          :initarg :geometry
           :initform nil)
    (texture-id :accessor texture-id
                :initarg :texture-id

@@ -58,16 +58,6 @@
   (bt:make-thread #'make-game :name "tradewarz"))
 
 (defun profile ()
-  (sb-sprof:with-profiling
-    (:max-samples 100000
-     :report :flat
-     :threads :all
-     :loop nil
-     :reset t
-     :show-progress nil)
-    (make-game)))
-
-(defun profile-2 ()
   (sb-profile:unprofile)
   (sb-profile:reset)
   (sb-profile:profile "TRADEWARZ")

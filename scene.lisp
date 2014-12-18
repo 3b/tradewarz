@@ -66,7 +66,7 @@
         for model = (apply #'make-instance 'model :name name data)
         do (setf (gethash name (models scene)) model)
            (when (object model)
-             (setf (lines model) (load-obj (object model))))))
+             (setf (geometry model) (load-obj (object model))))))
 
 (defun current-scene ()
   (scene *game*))
@@ -150,7 +150,7 @@
           (loop with vertex-vector = (make-vector)
                 with normal-vector = (make-vector)
                 with size = (apply #'make-vector (get-size model))
-                for (normal vertex texture color) in (lines model)
+                for (normal vertex texture color) in (geometry model)
                 do (apply #'gl:color color)
                    (apply #'gl:tex-coord texture)
                    (apply #'vector-modify vertex-vector vertex)
