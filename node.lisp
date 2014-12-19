@@ -30,7 +30,13 @@
         :initform (make-vector))
    (dtv :accessor dtv
         :initarg :dtv
-        :initform (make-vector))))
+        :initform (make-vector))
+   (movingp :accessor movingp
+            :initarg :movingp
+            :initform nil)
+   (rotatingp :accessor rotatingp
+              :initarg :rotatingp
+              :initform nil)))
 
 (defun make-node (model)
   (make-instance 'scene-node :model model))
@@ -63,8 +69,8 @@
   (when (model node)
     (let* ((model (get-model (model node)))
            (size (get-size model))
-           (model-origin (vector-multiply-new (make-vector 0 0 0) size))
-           (radial-extent-origin (vector-multiply-new (radial-extent model) size))
+           (model-origin (vector-multiply (make-vector 0 0 0) size))
+           (radial-extent-origin (vector-multiply (radial-extent model) size))
            (world-model-origin (node-world-coords node model-origin))
            (world-radial-extent (node-world-coords node radial-extent-origin))
            (distance (vector-distance world-model-origin world-radial-extent)))
@@ -95,19 +101,15 @@
         (gl:mult-matrix (convert-to-opengl-new (world-basis node)))
         (gl:bind-texture :texture-2d (texture-id model))
         (gl:with-primitive (primitive model)
-          (loop with vertex-vector = (make-vector)
-                with normal-vector = (make-vector)
+          (loop with vertex = (make-vector)
+                with normal = (make-vector)
                 with size = (get-size model)
-                for (normal vertex texture color) in (geometry model)
-                do (apply #'gl:color color)
-                   (apply #'gl:tex-coord texture)
-                   (apply #'vector-modify vertex-vector vertex)
-                   (vector-multiply vertex-vector size vertex-vector)
-                   (when normal
-                     (apply #'vector-modify normal-vector normal)
-                     (gl:normal (vx normal-vector)
-                                (vy normal-vector)
-                                (vz normal-vector)))
-                   (gl:vertex (vx vertex-vector)
-                              (vy vertex-vector)
-                              (vz vertex-vector)))))))) 
+                for (n v uv c) in (geometry model)
+                do (apply #'gl:color c)
+                   (apply #'gl:tex-coord uv)
+                   (apply #'vector-modify vertex v)
+                   (vector-multiply-to vertex size vertex)
+                   (when n
+                     (apply #'vector-modify normal n)
+                     (gl:normal (vx normal) (vy normal) (vz normal)))
+                   (gl:vertex (vx vertex) (vy vertex) (vz vertex))))))))

@@ -50,7 +50,7 @@
                  (setf (vx digit-offset) (* digit-count digit-size))
                  (add-node node)
                  (apply #'vector-modify (dv node) offset)
-                 (vector-add (dv node) digit-offset (dv node))
+                 (vector-add-to (dv node) digit-offset (dv node))
                  (incf digit-count))))))
 
 (defun generate-map ()
