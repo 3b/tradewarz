@@ -62,4 +62,5 @@
   (sb-profile:reset)
   (sb-profile:profile "TRADEWARZ")
   (make-game)
-  (sb-profile:report))
+  (sb-profile:report)
+  (sb-profile:unprofile))

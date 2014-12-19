@@ -23,9 +23,11 @@
     (setf now (running-time)
           delta (- now before)
           before now)
-    (let ((seconds (/ (- now start) 1000)))
+    (let* ((seconds (/ (- now start) 1000))
+           (fps (/ frames seconds))
+           (ms (* 1000 (/ fps))))
       (when (and (debugp *game*)
                  (> seconds interval))
-        (format t "FPS: ~,2f~%" (/ frames seconds))
+        (format t "FPS: ~,2f, ms/frame: ~,4f~%" fps ms)
         (setf frames 0
               start (running-time))))))

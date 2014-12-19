@@ -34,8 +34,8 @@
   (let ((model (get-model :picking-ray))
         (near (unproject-vector x y 0))
         (far (unproject-vector x y 1)))
-    (setf (geometry model) `((nil ,(vector->list near) (1 1) (1 0 0))
-                             (nil ,(vector->list far) (1 1) (1 0 0))))
+    (setf (geometry model) `(((1 1 1) ,(vector->list near) (1 1) (1 0 0))
+                             ((1 1 1) ,(vector->list far) (1 1) (1 0 0))))
     (add-node (make-node :picking-ray))))
 
 (defun unproject-vector (x y z)

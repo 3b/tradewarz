@@ -25,7 +25,6 @@
   (generate-map)
 
   ;; test entities
-  (defparameter *e1* (make-node :tank))
   (let ((axes (make-node :axes))
         (tank (make-node :tank))
         (jet (make-node :jet)))
