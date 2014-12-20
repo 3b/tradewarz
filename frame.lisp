@@ -1,7 +1,7 @@
 (in-package :tradewarz)
 
 (defclass frame ()
-  ((start :accessor start
+  ((init :accessor init
           :initform (running-time))
    (now :accessor now
         :initform (running-time))
@@ -15,19 +15,17 @@
              :initform 5.0)))
 
 (defun running-time ()
-  (sdl:sdl-get-ticks))
+  (get-internal-real-time))
 
 (defmethod step-frame ((frame frame))
-  (with-slots (start now before delta frames interval) frame
+  (with-slots (init now before delta frames interval) frame
     (incf frames)
     (setf now (running-time)
           delta (- now before)
           before now)
-    (let* ((seconds (/ (- now start) 1000))
-           (fps (/ frames seconds))
-           (ms (* 1000 (/ fps))))
+    (let* ((seconds (/ (- now init) internal-time-units-per-second)))
       (when (and (debugp *game*)
                  (> seconds interval))
-        (format t "FPS: ~,2f, ms/frame: ~,4f~%" fps ms)
+        (format t "FPS: ~,2f~%" (/ frames seconds))
         (setf frames 0
-              start (running-time))))))
+              init (running-time))))))

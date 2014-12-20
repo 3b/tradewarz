@@ -1,6 +1,6 @@
 (in-package :tradewarz)
 
-(defclass display ()
+(defclass display (gl-window)
   ((width :reader width
           :initarg :width
           :initform 800)
@@ -12,12 +12,7 @@
    (fps :reader fps
         :initform nil)
    (camera :reader camera
-           :initform (make-instance 'camera))
-   (gl-settings :reader gl-settings
-                :initform '((:sdl-gl-doublebuffer 1)
-                            (:sdl-gl-accelerated-visual 1)
-                            (:sdl-gl-multisamplebuffers 1)
-                            (:sdl-gl-multisamplesamples 4)))))
+           :initform (make-instance 'camera))))
 
 (defclass camera ()
   ((eye :reader eye
@@ -30,27 +25,20 @@
        :initarg :up
        :initform (make-vector 0 1 0))))
 
-(defmethod make-window :before ((display display))
-  "Configure OpenGL attributes before creating a window"
-  (dolist (setting (gl-settings display))
-    (apply #'sdl:set-gl-attribute setting)))
+(defmethod initialize-instance :before ((display display) &key)
+  (dolist (setting '((:multisamplebuffers 1)
+                     (:multisamplesamples 4)))
+    (apply #'sdl2:gl-set-attr setting)))
 
-(defmethod make-window ((display display))
-  "Create a window with an OpenGL context"
-  (sdl:window (width display)
-              (height display)
-              :title-caption (title display)
-              :icon-caption (title display)
-              :opengl t))
-
-(defmethod make-window :after ((display display))
+(defmethod initialize-instance :after ((display display) &key &allow-other-keys)
   "Configure SDL and OpenGL after creating a window"
   (configure display 'sdl)
   (configure display 'opengl))
 
 (defmethod configure ((display display) (api (eql 'sdl)))
   "Configure SDL settings"
-  (setf (sdl:frame-rate) (fps display)))
+  (sdl2:gl-set-swap-interval (or (fps display) 0))
+  (setf (idle-render display) t))
 
 (defmethod configure ((display display) (api (eql 'opengl)))
   "Configure OpenGL settings"
@@ -81,3 +69,13 @@
   "Set up the camera"
   (let ((look-at (list (eye camera) (center camera) (up camera))))
     (apply #'glu:look-at (flatten (mapcar #'vector->list look-at)))))
+
+(defmethod render ((display display))
+  (gl:clear :color-buffer :depth-buffer)
+  (when-let ((scene (current-scene)))
+    (step-frame scene)
+    (update-scene)))
+
+(defmethod close-window ((display display))
+  (format t "Quitting game~%")
+  (call-next-method))

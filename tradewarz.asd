@@ -4,11 +4,11 @@
   :version "0.1"
   :license "MIT"
   :description "A war game"
-  :depends-on (lispbuilder-sdl
-               lispbuilder-sdl-image
+  :depends-on (sdl2
+               sdl2kit
+               png-read
                cl-opengl
                cl-glu
-               bordeaux-threads
                alexandria
                split-sequence)
   :serial t

@@ -20,27 +20,28 @@
 (defun current-scene ()
   (scene *game*))
 
-(defun load-scene (&key name)
-  (setf (scene *game*) (make-instance 'scene :name name))
-  (generate-map)
+(defun load-scene (game &key name)
+  (sdl2:in-main-thread ()
+    (setf (scene game) (make-instance 'scene :name name))
+    (generate-map)
 
-  ;; test entities
-  (let ((axes (make-node :axes))
-        (tank (make-node :tank))
-        (jet (make-node :jet)))
+    ;; test entities
+    (let ((axes (make-node :axes))
+          (tank (make-node :tank))
+          (jet (make-node :jet)))
 
-    (add-node axes)
-    (vector-modify (dv axes) -64 32 0)
+      (add-node axes)
+      (vector-modify (dv axes) -64 32 0)
 
-    (add-node tank)
-    (setf (rotatingp tank) t)
-    (vector-modify (drv tank) 0 0 0.01)
-    (vector-modify (dv tank) 0 0 8)
+      (add-node tank)
+      (setf (rotatingp tank) t)
+      (vector-modify (drv tank) 0 0 0.01)
+      (vector-modify (dv tank) 0 0 8)
 
-    (add-node jet)
-    (setf (rotatingp jet) t)
-    (vector-modify (drv jet) 0 0 0.01)
-    (vector-modify (dv jet) 56 0 32)))
+      (add-node jet)
+      (setf (rotatingp jet) t)
+      (vector-modify (drv jet) 0 0 0.01)
+      (vector-modify (dv jet) 56 0 32))))
 
 (defun loop-scene (func &optional parent)
   (let ((parent (or parent (root (current-scene)))))

@@ -64,7 +64,7 @@
 
 (defun pick-nodes ()
   (loop-scene #'pick-node))
- 
+
 (defun pick-node (node)
   (when (model node)
     (let* ((model (get-model (model node)))
@@ -75,7 +75,7 @@
            (world-radial-extent (node-world-coords node radial-extent-origin))
            (distance (vector-distance world-model-origin world-radial-extent)))
       (print distance))))
- 
+
 (defun update-local-basis (node)
   (matrix-translate (dv node) (local-basis node))
   (vector-clear (dv node))
@@ -106,7 +106,7 @@
                 with size = (get-size model)
                 for (n v uv c) in (geometry model)
                 do (apply #'gl:color c)
-                   (apply #'gl:tex-coord uv)
+                   (gl:tex-coord (cadr uv) (car uv))
                    (apply #'vector-modify vertex v)
                    (vector-multiply-to vertex size vertex)
                    (when n
