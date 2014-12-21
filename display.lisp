@@ -55,7 +55,9 @@
     :multisample
     :color-material
     :lighting
+    :cull-face
     :light0)
+  (gl:front-face :cw)
   (gl:hint :perspective-correction-hint :nicest)
   (gl:color-material :front :ambient-and-diffuse)
   (gl:material :front :shininess 50)
