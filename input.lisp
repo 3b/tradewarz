@@ -22,7 +22,7 @@
     (format t "Key released: ~s~%" scancode)))
 
 (defmethod mousebutton-event ((display display) state ts b x y)
-  (let ((coords (convert-mouse-coords x y)))
+  (let ((coords (convert-mouse-coords (float x) (float y))))
     (case state
       (:MOUSEBUTTONDOWN (mouse-down b coords))
       (:MOUSEBUTTONUP (mouse-up b coords)))))
@@ -38,16 +38,24 @@
 (defun make-picking-ray (x y)
   (when (debugp *game*)
     (let ((model (get-model :picking-ray))
-          (near (unproject-vector x y 0))
-          (far (unproject-vector x y 1)))
-      (setf (geometry model) `(((1 1 1) ,(vector->list near) (1 1) (1 0 0))
-                               ((1 1 1) ,(vector->list far) (1 1) (1 0 0))))
+          (near (unproject-vector x y 0.0))
+          (far (unproject-vector x y 1.0)))
+      (setf (geometry model) `(((1.0 1.0 1.0)
+                                ,(vector->list near)
+                                (1.0 1.0)
+                                (1.0 0.0 0.0))
+                               ((1.0 1.0 1.0)
+                                ,(vector->list far)
+                                (1.0 1.0)
+                                (1.0 0.0 0.0))))
       (add-node (make-node :picking-ray)))))
 
 (defun unproject-vector (x y z)
   (multiple-value-bind (x y z)
     (glu:un-project x y z)
-    (make-vector x y z)))
+    (make-vector (coerce x 'single-float)
+                 (coerce y 'single-float)
+                 (coerce z 'single-float))))
 
 (defun convert-mouse-coords (x y)
   "Convert SDL mouse coordinates to OpenGL coordinates with origin at the
