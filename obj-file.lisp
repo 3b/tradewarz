@@ -45,13 +45,13 @@
 
 (defmethod set-faces ((obj obj-file) data)
   (loop for face in data
-        for (vi ti ni) = (mapcar #'read-from-string (split-sequence #\/ face))
-        for vertex = (aref (vertices obj) vi)
-        for texture = (aref (textures obj) ti)
-        for normal = (aref (normals obj) ni)
+        for (v uv n) = (mapcar #'read-from-string (split-sequence #\/ face))
+        for vertex = (aref (vertices obj) v)
+        for texture = (aref (textures obj) uv)
+        for normal = (aref (normals obj) n)
         do (push (list
                    (vector->list normal)
                    (vector->list vertex)
                    (vector->list texture)
-                   '(1 1 1))
+                   '(1.0 1.0 1.0))
                  (faces obj))))

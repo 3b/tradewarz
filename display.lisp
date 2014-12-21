@@ -17,13 +17,13 @@
 (defclass camera ()
   ((eye :reader eye
         :initarg :eye
-        :initform (make-vector 0 -150 250))
+        :initform (make-vector 0.0 -150.0 250.0))
    (center :reader center
            :initarg :center
-           :initform (make-vector 0 0 0))
+           :initform (make-vector))
    (up :reader up
        :initarg :up
-       :initform (make-vector 0 1 0))))
+       :initform (make-vector 0.0 1.0 0.0))))
 
 (defmethod initialize-instance :before ((display display) &key)
   (dolist (setting '((:multisamplebuffers 1)

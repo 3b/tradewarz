@@ -39,8 +39,8 @@
   (when (debugp *game*)
     (loop with digits = (concatenate 'list (format nil "~a,~a" x y))
           with digit-count = 0
-          with digit-size = 8
-          with digit-offset = (make-vector 0 digit-size 0.1)
+          with digit-size = 8.0
+          with digit-offset = (make-vector 0.0 digit-size 0.1)
           for digit in digits
           for model = (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD")
           do (if (string= digit #\,)
@@ -50,7 +50,7 @@
                  (setf (vx digit-offset) (* digit-count digit-size))
                  (add-node node)
                  (apply #'vector-modify (dv node) offset)
-                 (vector-add-to (dv node) digit-offset (dv node))
+                 (vector-add-* (dv node) digit-offset (dv node))
                  (incf digit-count))))))
 
 (defun generate-map ()

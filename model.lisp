@@ -26,7 +26,7 @@
           :initform nil)
    (radial-extent :accessor radial-extent
                   :initarg :radial-extent
-                  :initform (make-vector 0 0 0))
+                  :initform (make-vector))
    (texture-id :accessor texture-id
                :initarg :texture-id
                :initform 0)))
@@ -52,7 +52,7 @@
 
 (defun find-radial-extent (model)
   (loop with farthest = 0
-        with origin = (make-vector 0 0 0)
+        with origin = (make-vector)
         for (nil v nil nil) in (geometry model)
         for vertex = (apply #'make-vector v)
         for distance = (vector-distance origin vertex)

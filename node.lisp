@@ -12,10 +12,10 @@
              :initform (make-hash-table :test 'eq))
    (local-basis :accessor local-basis
                 :initarg :local-basis
-                :initform (matrix-identity-new))
+                :initform (matrix-identity))
    (world-basis :accessor world-basis
                 :initarg :world-basis
-                :initform (matrix-identity-new))
+                :initform (matrix-identity))
    (dirtyp :accessor dirtyp
            :initarg dirtyp
            :initform t)
@@ -60,7 +60,7 @@
 
 (defun node-world-coords (node point)
   "Return the world coordinates of a point in a node's local coordinates"
-  (matrix-apply-new (world-basis node) point))
+  (matrix-apply (world-basis node) point))
 
 (defun pick-nodes ()
   (loop-scene #'pick-node))
@@ -69,7 +69,7 @@
   (when (model node)
     (let* ((model (get-model (model node)))
            (size (get-size model))
-           (model-origin (vector-multiply (make-vector 0 0 0) size))
+           (model-origin (vector-multiply (make-vector) size))
            (radial-extent-origin (vector-multiply (radial-extent model) size))
            (world-model-origin (node-world-coords node model-origin))
            (world-radial-extent (node-world-coords node radial-extent-origin))
@@ -77,18 +77,18 @@
       (print distance))))
 
 (defun update-local-basis (node)
-  (matrix-translate (dv node) (local-basis node))
+  (matrix-translate-* (dv node) (local-basis node))
   (vector-clear (dv node))
-  (matrix-rotate (dr node) (local-basis node))
+  (matrix-rotate-* (dr node) (local-basis node))
   (vector-clear (dr node))
   (when (movingp node)
-    (matrix-translate (dtv node) (local-basis node)))
+    (matrix-translate-* (dtv node) (local-basis node)))
   (when (rotatingp node)
-    (matrix-rotate (drv node) (local-basis node))))
+    (matrix-rotate-* (drv node) (local-basis node))))
 
 (defun update-world-basis (node)
   (if (and (parent node) (model node))
-    (matrix-multiply
+    (matrix-multiply-*
       (world-basis (parent node))
       (local-basis node)
       (world-basis node))))
@@ -98,7 +98,7 @@
   (let ((model (get-model (model node))))
     (when model
       (gl:with-pushed-matrix
-        (gl:mult-matrix (convert-to-opengl-new (world-basis node)))
+        (gl:mult-matrix (matrix-convert-to-opengl (world-basis node)))
         (gl:bind-texture :texture-2d (texture-id model))
         (gl:with-primitive (primitive model)
           (loop with vertex = (make-vector)
@@ -108,7 +108,7 @@
                 do (apply #'gl:color c)
                    (gl:tex-coord (cadr uv) (car uv))
                    (apply #'vector-modify vertex v)
-                   (vector-multiply-to vertex size vertex)
+                   (vector-multiply-* vertex size vertex)
                    (when n
                      (apply #'vector-modify normal n)
                      (gl:normal (vx normal) (vy normal) (vz normal)))

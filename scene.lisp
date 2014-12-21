@@ -31,17 +31,19 @@
           (jet (make-node :jet)))
 
       (add-node axes)
-      (vector-modify (dv axes) -64 32 0)
+      (vector-modify (dv axes) -64.0 32.0 0.0)
 
       (add-node tank)
       (setf (rotatingp tank) t)
-      (vector-modify (drv tank) 0 0 0.01)
-      (vector-modify (dv tank) 0 0 8)
+      (vector-modify (drv tank) 0.0 0.0 0.01)
+      (vector-modify (dv tank) 0.0 0.0 8.0)
 
       (add-node jet)
       (setf (rotatingp jet) t)
-      (vector-modify (drv jet) 0 0 0.01)
-      (vector-modify (dv jet) 56 0 32))))
+      (vector-modify (drv jet) 0.0 0.0 0.01)
+      (vector-modify (dv jet) 56.0 0.0 32.0))
+
+))
 
 (defun loop-scene (func &optional parent)
   (let ((parent (or parent (root (current-scene)))))

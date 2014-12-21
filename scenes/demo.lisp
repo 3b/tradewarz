@@ -1,5 +1,5 @@
-(:assets ("font" "map" "units" "test")
- :world ((:tile-size (64 64)
+(:assets ("test" "font" "map" "units")
+ :world ((:tile-size (64.0 64.0)
           :tile-shape :hexagon
           :tiles #2a ((0 0 0 0 0 0 0 0 0 0 0 0)
                       (0 0 0 0 0 0 0 0 0 0 0 0)
