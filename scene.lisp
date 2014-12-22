@@ -43,7 +43,7 @@
       (vector-modify (drv jet) 0.0 0.0 0.01)
       (vector-modify (dv jet) 56.0 0.0 32.0))
 
-))
+    (current-scene)))
 
 (defun loop-scene (func &optional parent)
   (let ((parent (or parent (root (current-scene)))))

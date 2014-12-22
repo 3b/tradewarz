@@ -1,3 +1,9 @@
 TODO
 
-* Add recursive assets: Assets should be able to obtain data from parent assets.
+* Add ability to remove node's from scene tree (The picking ray is currently
+  inserted multiple times and drawn on top of each other each click)
+
+* Test if an object's sphere is selected using the picking ray (code started in
+  node.lisp)
+
+* Add recursive assets: Assets should be able to obtain data from parent assets

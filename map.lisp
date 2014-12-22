@@ -30,23 +30,42 @@
          (offset (mapcar #'* size (call-next-method shape x (- y)))))
     (add-node node)
     (apply #'vector-modify (dv node) offset)
-    (draw-tile-coords x y offset)))
+    #++(draw-tile-coords y x offset)))
 
 (defmethod draw-tile (shape x y)
   (list x y 0))
 
-(defun draw-tile-coords (y x offset)
+(defun coordinates->models (x y)
+  (flet ((loop-num (num)
+           (let ((models #(:digit-0
+                           :digit-1
+                           :digit-2
+                           :digit-3
+                           :digit-4
+                           :digit-5
+                           :digit-6
+                           :digit-7
+                           :digit-8
+                           :digit-9)))
+             (nreverse
+               (or (loop until (zerop num)
+                         collect (multiple-value-bind (q r) (floor num 10)
+                                   (setf num q)
+                                   (aref models r)))
+                   (list :digit-0))))))
+    (flatten (list (loop-num x) #\, (loop-num y)))))
+
+(defun draw-tile-coords (x y offset)
   (when (debugp *game*)
-    (loop with digits = (concatenate 'list (format nil "~a,~a" x y))
+    (loop with digits = (coordinates->models x y)
           with digit-count = 0
           with digit-size = 8.0
           with digit-offset = (make-vector 0.0 digit-size 0.1)
           for digit in digits
-          for model = (intern (format nil "~:@(digit-~a~)" digit) "KEYWORD")
-          do (if (string= digit #\,)
+          do (if (eq digit #\,)
                (setf digit-count 0
                      (vy digit-offset) (- (vy digit-offset)))
-               (let ((node (make-node model)))
+               (let* ((node (make-node digit)))
                  (setf (vx digit-offset) (* digit-count digit-size))
                  (add-node node)
                  (apply #'vector-modify (dv node) offset)

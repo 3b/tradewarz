@@ -23,14 +23,11 @@
       (loop for line = (remove #\Return (read-line in nil nil))
             while line
             for (name . data) = (split-sequence #\Space line)
-            if (string= name "v")
-            do (set-coords 'vertices obj data)
-            if (string= name "vt")
-            do (set-coords 'textures obj data)
-            if (string= name "vn")
-            do (set-coords 'normals obj data)
-            if (string= name "f")
-            do (set-faces obj data)))
+            do (cond
+                 ((string= name "v") (set-coords 'vertices obj data))
+                 ((string= name "vt") (set-coords 'textures obj data))
+                 ((string= name "vn") (set-coords 'normals obj data))
+                 ((string= name "f") (set-faces obj data)))))
     (faces obj)))
 
 (defmethod set-coords (coord-type (obj obj-file) data)
@@ -39,6 +36,7 @@
       (with-input-from-string (in coords)
         (apply #'make-vector
                (loop for coord = (read in nil nil)
+                     for c = (when (< coord ))
                      while coord
                      collect coord)))
       (funcall coord-type obj))))
@@ -53,5 +51,5 @@
                    (vector->list normal)
                    (vector->list vertex)
                    (vector->list texture)
-                   '(1.0 1.0 1.0))
+                   '(1 1 1))
                  (faces obj))))

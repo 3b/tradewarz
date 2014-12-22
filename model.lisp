@@ -46,15 +46,50 @@
   (loop for (name data) in (read-data "assets" asset)
         for model = (apply #'make-instance 'model :name name data)
         do (setf (gethash name (models scene)) model)
-           (when (object model)
-             (setf (geometry model) (load-obj (object model))))
-           (find-radial-extent model)))
+        (read-geometry model)
+        (read-radial-extent model)))
 
-(defun find-radial-extent (model)
+(defstruct (geometry
+             (:conc-name g))
+  (n (make-array '(0) :initial-element (make-vector) :element-type 'ax-vector)
+     :type (simple-array ax-vector))
+  (v (make-array '(0) :initial-element (make-vector) :element-type 'ax-vector)
+     :type (simple-array ax-vector))
+  (uv (make-array '(0) :initial-element (make-vector) :element-type 'ax-vector)
+      :type (simple-array ax-vector))
+  (c (make-array '(0) :initial-element (make-vector) :element-type 'ax-vector)
+     :type (simple-array ax-vector)))
+
+(defun read-geometry (model)
+  (flet ((add-vector (i v place)
+           (setf (aref place i)
+                 (apply #'make-vector (mapcar #'float v)))))
+    (when (object model)
+      (setf (geometry model) (load-obj (object model))))
+    (loop with data = (geometry model)
+          with size = (length data)
+          with geometry = (make-geometry)
+          with normals = (make-array size)
+          with vertices = (make-array size)
+          with uvs = (make-array size)
+          with colors = (make-array size)
+          with i = 0
+          for (n v uv c) in data
+          do (add-vector i n normals)
+             (add-vector i v vertices)
+             (add-vector i uv uvs)
+             (add-vector i c colors)
+             (incf i)
+          finally (psetf (gn geometry) normals
+                         (gv geometry) vertices
+                         (guv geometry) uvs
+                         (gc geometry) colors
+                         (geometry model) geometry))))
+
+(defun read-radial-extent (model)
   (loop with farthest = 0
         with origin = (make-vector)
-        for (nil v nil nil) in (geometry model)
-        for vertex = (apply #'make-vector v)
+        for vertex across (gv (geometry model))
         for distance = (vector-distance origin vertex)
         do (when (> distance farthest)
              (setf (radial-extent model) vertex
