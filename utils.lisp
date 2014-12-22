@@ -1,5 +1,7 @@
 (in-package :tradewarz)
 
+(defvar *game* nil)
+
 (defun get-path (sub-path filename)
   (let ((path (format nil "~a/~a" sub-path filename)))
     (asdf:system-relative-pathname "tradewarz" path)))
