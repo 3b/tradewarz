@@ -47,7 +47,7 @@
                (setf digit-count 0
                      (vy digit-offset) (- (vy digit-offset)))
                (let ((node (make-node model)))
-                 (setf (vx digit-offset) (* digit-count digit-size))
+                 (setf (vx digit-offset) (float (* digit-count digit-size)))
                  (add-node node)
                  (apply #'vector-modify (dv node) offset)
                  (vector-add-to (dv node) digit-offset (dv node))

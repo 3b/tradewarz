@@ -1,12 +1,16 @@
 (in-package :tradewarz)
 
 (defstruct (ax-vector
-             (:constructor make-vector (&optional x y z))
-             (:conc-name v)
-             (:print-function print-vector))
+            (:type (vector single-float))
+            (:constructor %make-vector (&optional x y z))
+            (:conc-name v))
   (x 0.0)
   (y 0.0)
   (z 0.0))
+
+(declaim (inline make-vector))
+(defun make-vector (&optional (x 0.0) (y 0.0) (z 0.0))
+  (%make-vector (float x 0.0) (float y 1.0) (float z 1.0)))
 
 (defun print-vector (struct stream depth)
   (declare (ignore depth))
@@ -37,9 +41,10 @@
 
 (defun vector-modify (src &optional x y z)
   "Assign new components to a vector"
-  (psetf (vx src) (or x (vx src))
-         (vy src) (or y (vy src))
-         (vz src) (or z (vz src)))
+  (declare (type (simple-array single-float (3)) src))
+  (when x (setf (vx src) (float x 1.0)))
+  (when y (setf (vy src) (float y 1.0)))
+  (when z (setf (vz src) (float z 1.0)))
   src)
 
 (defun vector->list (src)
