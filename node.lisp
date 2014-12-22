@@ -105,7 +105,7 @@
                 with normal = (make-vector)
                 with size = (get-size model)
                 for (n v uv c) in (geometry model)
-                do (apply #'gl:color c)
+                do (gl:color (first c) (second c) (third c) (or (fourth c) 1.0))
                    (gl:tex-coord (cadr uv) (car uv))
                    (apply #'vector-modify vertex v)
                    (vector-multiply-to vertex size vertex)
