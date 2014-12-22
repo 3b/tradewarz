@@ -23,10 +23,18 @@
   (setf (debugp *game*) (not (debugp *game*)))
   (load-scene *game* :name "demo"))
 
-(defun profile ()
+(defun profile (seconds)
+  (profile-start)
+  (sleep seconds)
+  (profile-stop))
+
+(defun profile-start ()
   (sb-profile:unprofile)
-  (sb-profile:reset)
   (sb-profile:profile "TRADEWARZ")
-  (start-game)
+  (start-game))
+
+(defun profile-stop ()
+  (close-window (display *game*))
   (sb-profile:report)
-  (sb-profile:unprofile))
+  (sb-profile:unprofile)
+  (sb-profile:reset))

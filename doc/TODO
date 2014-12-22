@@ -6,4 +6,6 @@ TODO
 * Test if an object's sphere is selected using the picking ray (code started in
   node.lisp)
 
+* Enable geometry culling (don't draw off-screen objects)
+
 * Add recursive assets: Assets should be able to obtain data from parent assets

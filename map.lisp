@@ -65,7 +65,7 @@
           do (if (eq digit #\,)
                (setf digit-count 0
                      (vy digit-offset) (- (vy digit-offset)))
-               (let* ((node (make-node digit)))
+               (let ((node (make-node digit)))
                  (setf (vx digit-offset) (* digit-count digit-size))
                  (add-node node)
                  (apply #'vector-modify (dv node) offset)
