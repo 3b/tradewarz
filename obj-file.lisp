@@ -50,8 +50,8 @@
         for texture = (aref (textures obj) ti)
         for normal = (aref (normals obj) ni)
         do (push (list
-                   (vector->list normal)
-                   (vector->list vertex)
-                   (vector->list texture)
-                   '(1 1 1))
+                  normal
+                  vertex
+                  texture
+                  (make-vector 1 1 1))
                  (faces obj))))
