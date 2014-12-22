@@ -98,7 +98,7 @@
   (let ((model (get-model (model node))))
     (when model
       (gl:with-pushed-matrix
-        (gl:mult-matrix (convert-to-opengl-new (world-basis node)))
+        (gl:mult-transpose-matrix (world-basis node))
         (gl:bind-texture :texture-2d (texture-id model))
         (gl:with-primitive (primitive model)
           (loop with vertex = (make-vector)
