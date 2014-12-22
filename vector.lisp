@@ -57,7 +57,7 @@
 
 (defun vector-negate (src)
   "Negate a vector's components as a new vector"
-  (vector-negate (vector-copy-new src)))
+  (vector-negate (vector-copy src)))
 
 (defun vector-add-to (src1 src2 dest)
   "Store the sum of two vectors in an existing vector"
@@ -101,7 +101,7 @@
 
 (defun vector-scale (src scalar)
   "Scale the length of a vector as a new vector"
-  (vector-scale (vector-copy-new src) scalar))
+  (vector-scale (vector-copy src) scalar))
 
 (defun vector-length (src)
   "Compute the Euclidean length of a vector"
@@ -119,7 +119,7 @@
 
 (defun vector-normalize (vec)
   "Convert a vector into a unit vector as a new vector"
-  (vector-normalize (vector-copy-new vec)))
+  (vector-normalize (vector-copy vec)))
 
 (defun vector-cross-to (src1 src2 dest)
   "Compute the cross product of two vectors to an existing vector"
