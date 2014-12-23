@@ -33,14 +33,20 @@
 
 (defmethod initialize-instance :after ((object model) &key)
   (when (image object)
-    (setf (texture-id object) (load-texture (image object)))))
+    (setf (texture-id object) (load-texture (image object))))
+  (when (size object)
+    (setf (slot-value object 'size)
+          (apply #'make-vector (size object)))
+    (loop for i below (length (size object))
+          when (zerop (aref (size object) i))
+            do (setf (aref (size object) i) 1.0))))
 
 (defun get-model (name)
   (gethash name (models (current-scene))))
 
 (defmethod get-size ((model model))
-  (apply #'make-vector (or (size model)
-                           (tile-size (current-map)))))
+  (or (size model)
+      (tile-size (current-map))))
 
 (defun translate-geometry (geometry)
   (flet ((x (x)

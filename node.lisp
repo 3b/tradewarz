@@ -99,13 +99,12 @@
     (when model
       (gl:with-pushed-matrix
         (gl:mult-transpose-matrix (world-basis node))
+        (let ((size (get-size model)))
+          (gl:scale (vx size) (vy size) (vz size)))
         (gl:bind-texture :texture-2d (texture-id model))
         (gl:with-primitive (primitive model)
-          (loop with vertex = (make-vector)
-                with size = (get-size model)
-                for (n v uv c) in (geometry model)
+          (loop for (n vertex uv c) in (geometry model)
                 do (gl:color (vx c) (vy c) (vz c))
                    (gl:tex-coord (vy uv) (vx uv))
-                   (vector-multiply-to v size vertex)
                    (gl:normal (vx n) (vy n) (vz n))
                    (gl:vertex (vx vertex) (vy vertex) (vz vertex))))))))

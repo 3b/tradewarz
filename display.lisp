@@ -56,7 +56,8 @@
     :color-material
     :lighting
     :cull-face
-    :light0)
+    :light0
+    :normalize)
   (gl:front-face :cw)
   (gl:hint :perspective-correction-hint :nicest)
   (gl:color-material :front :ambient-and-diffuse)

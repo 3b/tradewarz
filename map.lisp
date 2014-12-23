@@ -6,9 +6,13 @@
                :initform :quad)
    (tile-size :reader tile-size
               :initarg :tile-size
-              :initform '(64 64 1))
+              :initform (make-vector 64 64 1))
    (tiles :reader tiles
           :initarg :tiles)))
+
+(defmethod initialize-instance :after ((map world-map) &key)
+  (setf (slot-value map 'tile-size)
+        (when (tile-size map) (apply #'make-vector (tile-size map)))))
 
 (defun current-map ()
   (world-map (current-scene)))
@@ -27,7 +31,7 @@
   (let* ((tile-id (aref (tiles (current-map)) y x))
          (node (make-node (find-tile tile-id)))
          (size (tile-size (current-map)))
-         (offset (mapcar #'* size (call-next-method shape x (- y)))))
+         (offset (map 'list '* size (call-next-method shape x (- y)))))
     (add-node node)
     (apply #'vector-modify (dv node) offset)
     (draw-tile-coords x y offset)))
