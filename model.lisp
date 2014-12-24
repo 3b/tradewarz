@@ -39,7 +39,10 @@
           (apply #'make-vector (size object)))
     (loop for i below (length (size object))
           when (zerop (aref (size object) i))
-            do (setf (aref (size object) i) 1.0))))
+            do (setf (aref (size object) i) 1.0)))
+  (setf (slot-value object 'primitive)
+        (or (cffi:foreign-enum-value '%gl:enum (primitive object) :errorp nil)
+            (primitive object))))
 
 (defun get-model (name)
   (gethash name (models (current-scene))))
