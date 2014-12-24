@@ -98,7 +98,14 @@
   (let ((model (get-model (model node))))
     (when model
       (gl:with-pushed-matrix
-        (gl:mult-transpose-matrix (world-basis node))
+        (let ((mat (world-basis node)))
+          #+(or cmucl sbcl ccl)
+          (if (typep mat '(simple-array single-float (16)))
+              (cffi:with-pointer-to-vector-data (p mat)
+                (%gl:mult-transpose-matrix-f p))
+              (gl:mult-transpose-matrix mat))
+          #-(or cmucl sbcl ccl)
+          (gl:mult-transpose-matrix mat))
         (let ((size (get-size model)))
           (gl:scale (vx size) (vy size) (vz size)))
         (gl:bind-texture :texture-2d (texture-id model))
