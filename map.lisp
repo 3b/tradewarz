@@ -27,14 +27,52 @@
         do (when (and id (= tile-id id))
              (return tile))))
 
+(defparameter *map-data* nil)
+(defun add-geometry (model hash size offset)
+  (let ((tristrip (member (primitive model)
+                          `(:triangle-strip
+                            ,(cffi:foreign-enum-value '%gl:enum
+                                                      :triangle-strip))))
+        (old1 nil)
+        (old2 nil)
+        (odd nil))
+    (flet ((de-strip (x)
+             (if tristrip
+                 (let ((v1 old1)
+                       (v2 old2))
+                   (when v1
+                     (when odd (rotatef v1 v2))
+                     (setf odd (not odd))
+                     (push v1 (gethash (image model) hash))
+                     (push v2 (gethash (image model) hash))
+                     (push x (gethash (image model) hash)))
+                   (shiftf old1 old2 x))
+                 (push x (gethash (image model) hash)))))
+      (loop for (n v uv c) in (geometry model)
+            do (de-strip (list n
+                               (vector-add (vector-multiply size v)
+                                           (apply #'make-vector offset))
+                               uv
+                               c))))))
+
 (defmethod draw-tile :around (shape x y)
-  (let* ((tile-id (aref (tiles (current-map)) y x))
-         (node (make-node (find-tile tile-id)))
-         (size (tile-size (current-map)))
-         (offset (map 'list '* size (call-next-method shape x (- y)))))
-    (add-node node)
-    (apply #'vector-modify (dv node) offset)
-    (draw-tile-coords x y offset)))
+  (if *map-data*
+      ;; building a VBO, add the geometry of the node to an existing
+      ;; array
+      (let* ((tile-id (aref (tiles (current-map)) y x))
+             (tile (get-model (find-tile tile-id)))
+             (size (tile-size (current-map)))
+             (offset (map 'list '* size (call-next-method shape x (- y)))))
+        (add-geometry tile *map-data* size offset)
+        (draw-tile-coords x y offset))
+      ;; otherwise just add separate nodes
+      (let* ((tile-id (aref (tiles (current-map)) y x))
+             (node (make-node (find-tile tile-id)))
+             (size (tile-size (current-map)))
+             (offset (map 'list '* size (call-next-method shape x (- y)))))
+        (add-node node)
+        (apply #'vector-modify (dv node) offset)
+        (draw-tile-coords x y offset))))
 
 (defmethod draw-tile (shape x y)
   (list x y 0))
@@ -59,7 +97,21 @@
 
 (defun generate-map ()
   (let ((shape (tile-shape (current-map))))
-    (loop with (h w) = (array-dimensions (tiles (current-map)))
-      for x below (or w 0)
-      do (loop for y below (or h 0)
-               do (draw-tile shape x y)))))
+    (let ((*map-data* (make-hash-table :test 'equal)))
+      (loop with (h w) = (array-dimensions (tiles (current-map)))
+            for x below (or w 0)
+            do (loop for y below (or h 0)
+                     do (draw-tile shape x y)))
+      (maphash
+       (lambda (k v)
+         (let* ((map-name (intern (format nil "~:@(map-~a~)" k)))
+                (model (make-instance 'model :name map-name :image k
+                                             :geometry (reverse v)
+                                             :primitive :triangles
+                                             :size '(1.0 1.0 1.0)
+                                             )))
+           (find-radial-extent model)
+           (create-vao model)
+           (setf (gethash map-name (models (current-scene))) model)
+           (add-node (make-node map-name))))
+       *map-data*)))))
