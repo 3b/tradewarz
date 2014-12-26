@@ -28,32 +28,51 @@
              (return tile))))
 
 (defparameter *map-data* nil)
+(defparameter *coord-data* nil)
 (defun add-geometry (model hash size offset)
   (let ((tristrip (member (primitive model)
                           `(:triangle-strip
                             ,(cffi:foreign-enum-value '%gl:enum
                                                       :triangle-strip))))
+        (lineloop  (member (primitive model)
+                          `(:line-loop
+                            ,(cffi:foreign-enum-value '%gl:enum
+                                                      :line-loop))))
         (old1 nil)
         (old2 nil)
         (odd nil))
     (flet ((de-strip (x)
-             (if tristrip
-                 (let ((v1 old1)
-                       (v2 old2))
-                   (when v1
-                     (when odd (rotatef v1 v2))
-                     (setf odd (not odd))
-                     (push v1 (gethash (image model) hash))
-                     (push v2 (gethash (image model) hash))
-                     (push x (gethash (image model) hash)))
-                   (shiftf old1 old2 x))
-                 (push x (gethash (image model) hash)))))
+             (cond
+               (tristrip
+                  (when x
+                    (let ((v1 old1)
+                         (v2 old2))
+                     (when v1
+                       (when odd (rotatef v1 v2))
+                       (setf odd (not odd))
+                       (push v1 (gethash (image model) hash))
+                       (push v2 (gethash (image model) hash))
+                       (push x (gethash (image model) hash)))
+                     (shiftf old1 old2 x))))
+               (lineloop
+                (unless old1
+                  (setf old1 x))
+                (when old2
+                  (push old2 (gethash (image model) hash))
+                  (if x
+                      (push x (gethash (image model) hash))
+                      (push old1 (gethash (image model) hash))))
+                (setf old2 x))
+               (t
+                (when x
+                  (push x (gethash (image model) hash)))))))
       (loop for (n v uv c) in (geometry model)
             do (de-strip (list n
                                (vector-add (vector-multiply size v)
                                            (apply #'make-vector offset))
                                uv
-                               c))))))
+                               c)))
+      (de-strip nil))))
 
 (defmethod draw-tile :around (shape x y)
   (if *map-data*
@@ -88,16 +107,17 @@
           do (if (string= digit #\,)
                (setf digit-count 0
                      (vy digit-offset) (- (vy digit-offset)))
-               (let ((node (make-node model)))
+               (progn
                  (setf (vx digit-offset) (float (* digit-count digit-size)))
-                 (add-node node)
-                 (apply #'vector-modify (dv node) offset)
-                 (vector-add-to (dv node) digit-offset (dv node))
+                 (add-geometry (get-model model) *coord-data*
+                               (make-vector digit-size digit-size digit-size)
+                               (map 'list '+ offset digit-offset))
                  (incf digit-count))))))
 
 (defun generate-map ()
   (let ((shape (tile-shape (current-map))))
-    (let ((*map-data* (make-hash-table :test 'equal)))
+    (let ((*map-data* (make-hash-table :test 'equal))
+          (*coord-data* (make-hash-table :test 'equal)))
       (loop with (h w) = (array-dimensions (tiles (current-map)))
             for x below (or w 0)
             do (loop for y below (or h 0)
@@ -114,4 +134,17 @@
            (create-vao model)
            (setf (gethash map-name (models (current-scene))) model)
            (add-node (make-node map-name))))
-       *map-data*)))))
+       *map-data*)
+      (maphash
+       (lambda (k v)
+         (let* ((name (intern (format nil "~:@(coords-~a~)" k)))
+                (model (make-instance 'model :name name :image k
+                                             :geometry (reverse v)
+                                             :primitive :lines
+                                             :size '(1.0 1.0 1.0)
+                                             )))
+           (find-radial-extent model)
+           (create-vao model)
+           (setf (gethash name (models (current-scene))) model)
+           (add-node (make-node name))))
+       *coord-data*))))
