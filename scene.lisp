@@ -51,6 +51,7 @@
 
 (defun update-scene ()
   (loop-scene #'update-node)
-  (loop-scene #'render-node))
+  (loop-scene #'render-node)
+  (gl:bind-vertex-array 0))
 
 

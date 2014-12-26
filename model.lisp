@@ -24,6 +24,12 @@
    (geometry :accessor geometry
           :initarg :geometry
           :initform nil)
+   (vao :accessor vao
+        :initarg :vao
+        :initform nil)
+   (vertex-count :accessor vertex-count
+                 :initarg :vertex-count
+                 :initform nil)
    (radial-extent :accessor radial-extent
                   :initarg :radial-extent
                   :initform (make-vector 0 0 0))
@@ -69,6 +75,67 @@
           else collect (cons (make-vector 0 1 0)
                              (mapcar #'x (cdr v))))))
 
+(defun create-vao (model)
+  (let* ((vao (gl:gen-vertex-array))
+         (vbo (car (gl:gen-buffers 1)))
+         (number-of-vertices (length (geometry model)))
+         ;; 3 floats for normal, 3 for position, 2 for UV, 3 for color
+         (floats-per-vertex (+ 3 3 2 3))
+         (float-size 4)
+         (bytes-per-vertex (* floats-per-vertex float-size)))
+    (unwind-protect
+         (progn
+           ;; fill a buffer with vertex data
+           (cffi:with-foreign-object (buffer :float (* floats-per-vertex
+                                                       number-of-vertices))
+             ;; add a helper function to fill the buffer, I starts from -1 so
+             ;; we can directly use the value returned from INCF as the index
+             (let ((i -1))
+               (labels ((add (a n &key swap)
+                          (assert (< i (* floats-per-vertex
+                                          number-of-vertices)))
+                          (loop for x below n
+                                do (setf (cffi:mem-aref buffer :float (incf i))
+                                         (if swap
+                                             (aref a (- n x 1))
+                                             (aref a x))))))
+                 (loop for (n v uv c) in (geometry model)
+                       do (add v 3)
+                          (add n 3)
+                          (add uv 2 :swap t)
+                          (add c 3))))
+             ;; copy it into the VBO
+             (gl:bind-vertex-array vao)
+             (gl:bind-buffer :array-buffer vbo)
+             (%gl:buffer-data :array-buffer (* bytes-per-vertex
+                                               number-of-vertices)
+                              buffer :static-draw)
+             ;; set up the VAO
+             (gl:enable-client-state :vertex-array)
+             (%gl:vertex-pointer 3 :float bytes-per-vertex
+                                 0)
+             (gl:enable-client-state :normal-array)
+             (%gl:normal-pointer :float bytes-per-vertex
+                                 (* 3 float-size))
+             (gl:enable-client-state :texture-coord-array)
+             (%gl:tex-coord-pointer 2 :float bytes-per-vertex
+                                    (* 6 float-size))
+             (gl:enable-client-state :color-array)
+             (%gl:color-pointer 3 :float bytes-per-vertex
+                                (* 8 float-size))
+             ;; done modifying the VAO, so turn it off again
+             (gl:bind-vertex-array 0)
+             ;; we don't need the VBO object anymore, since the VAO keeps
+             ;; a reference to it
+             (gl:delete-buffers (list vbo))
+             (setf vbo nil)
+             ;; store the VAO and number of vertices in model
+             (setf (vertex-count model) number-of-vertices
+                   (vao model) (shiftf vao nil))))
+      ;; make sure VAO and VBO get deleted in case we had an error
+      (when vbo (gl:delete-buffers (list vbo)))
+      (when vao (gl:delete-vertex-arrays (list vao))))))
+
 (defun load-models (scene asset)
   (loop for (name data) in (read-data "assets" asset)
         for model = (apply #'make-instance 'model :name name data)
@@ -76,7 +143,8 @@
            (if (object model)
                (setf (geometry model) (load-obj (object model)))
                (setf (geometry model) (translate-geometry (geometry model))))
-           (find-radial-extent model)))
+           (find-radial-extent model)
+           (create-vao model)))
 
 (defun find-radial-extent (model)
   (loop with farthest = 0
