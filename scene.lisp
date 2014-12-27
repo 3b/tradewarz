@@ -41,7 +41,49 @@
       (add-node jet)
       (setf (rotatingp jet) t)
       (vector-modify (drv jet) 0 0 0.01)
-      (vector-modify (dv jet) 56 0 32))))
+      (vector-modify (dv jet) 56 0 32)
+
+      (flet ((heli (p &key (pos '(112 0 40)) (r '(0 0 0)) (s 1.0)
+                        (dr 0.0))
+               (setf s (float s 1.0))
+               (let ((heli (make-node :heli))
+                     (heli-rotor-top (make-node :heli-rotor-top))
+                     (heli-rotor-tail (make-node :heli-rotor-tail)))
+                 (if p
+                     (add-node heli :parent p)
+                     (add-node heli))
+                 (setf (rotatingp heli) t)
+                 (vector-modify (drv heli) 0 0 dr)
+                 (apply #'vector-modify (dr heli) r)
+                 (apply #'vector-modify (dv heli) pos)
+                 (setf (local-basis heli)
+                       (make-matrix s 0.0 0.0 0.0
+                                    0.0 s 0.0 0.0
+                                    0.0 0.0 s 0.0
+                                    0.0 0.0 0.0 1.0))
+
+                 (add-node heli-rotor-top :parent heli)
+                 (setf (rotatingp heli-rotor-top) t)
+                 (vector-modify (drv heli-rotor-top) 0 0 0.003)
+                 (vector-modify (dv heli-rotor-top) -12 0 0)
+
+                 (add-node heli-rotor-tail :parent heli)
+                 (setf (rotatingp heli-rotor-tail) t)
+                 (vector-modify (drv heli-rotor-tail) 0 0.1 0.0)
+                 (vector-modify (dv heli-rotor-tail) 24 0 -8)
+                 heli-rotor-top)))
+        (let* ((s1 2)
+               (heli (heli nil :pos '(50 -60 20) :s s1 :dr 0.0001)))
+          (labels ((h2 (p s x)
+                     (when (plusp x)
+                       (loop for i below 4
+                             for a = (* (+ 0.5 i) (/ pi 2))
+                             for h =(heli p :pos (list (+ (* 30 (sin a)))
+                                                          (* 30 (cos a)) 5)
+                                            :r `(,(/ pi -2) ,a 0)
+                                            :s s)
+                             do (h2 h s (1- x))))))
+            (h2 heli 0.5 4)))))))
 
 (defun loop-scene (func &optional parent)
   (let ((parent (or parent (root (current-scene)))))
